@@ -204,8 +204,5 @@ func main() {
 		if g.activePlayer == 1 {
 			col += 1
 		}
-
 	}
-
-	fmt.Println("hello world")
 }
