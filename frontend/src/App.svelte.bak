@@ -1,0 +1,112 @@
+<!-- from: https://dev.to/blazephoenix/consuming-an-api-in-svelte-5181 -->
+
+<script>
+
+	import { onMount } from 'svelte';
+	
+	onMount(() => {getData();});
+
+	let topRow = "ESKISTAFÜNF"; 
+	let game = {};
+
+	function getColorActivePlayer() {
+		if (game.ActivePlayer == 1) {
+			return game.ColorPlayer1;
+		} else {
+			return game.ColorPlayer2;
+		}
+	}
+
+	async function getData() {
+   		const response = await fetch("http://localhost:8080/wordclock/connectfour");
+   		const json = await response.json();
+   		if (response.ok) {
+			game = json;
+   		} else {
+     		throw new Error(json);
+   		}
+ 	}
+
+	async function putData(col=0) {
+		const res = await fetch("http://localhost:8080/wordclock/connectfour",
+		 {
+    		method: 'PUT',
+    		body: JSON.stringify({
+      			column: col
+    		}),
+    		headers: {
+      			"Content-type": "application/json; charset=UTF-8"
+    		}
+		})
+		const json = await res.json()
+		game = json;
+	}
+</script>
+
+
+<style>
+.field {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  padding: .2em;
+  margin: .5em;
+  border: none;    
+  background-color: LightGray; 
+}
+.btnMove {
+  text-align: center;
+  width: 2em;
+  height: 2em;
+  padding: .2em;
+  margin: .5em;
+  border: none;    
+  background-color: LightGray; 
+}
+.btnMove:hover { background-color: var(--bgcolor); }
+</style>
+
+
+<main>
+
+{#await game}
+    <p>...waiting</p>
+{:then data}
+	<section>
+	<h1>Info</h1>
+    <p>Active Player:  {data.ActivePlayer}</p>
+    <p>State:          {data.State}</p>
+    <p>Color Player 1: <span style="background-color:{data.ColorPlayer1}">{data.ColorPlayer1}</span></p>
+    <p>Color Player 2: <span style="background-color:{data.ColorPlayer2}">{data.ColorPlayer2}</span></p>
+	</section>
+	<section>
+	<h1>Next Move</h1>
+	{#each data.AllowedMoves as allowed, i}
+		{#if allowed}
+			<button class="btnMove" on:click={() => putData(i)} style="--bgcolor: {getColorActivePlayer()}" >{topRow.charAt(i)}</button>
+		{:else}
+			<button class="btnMove" style="background-color:black">{topRow.charAt(i)}</button>
+   		{/if}
+	{/each}
+    </section>
+	<section>
+	<h1>Board</h1>
+	{#each data.Board as row}
+		<div>
+		{#each row as field}
+		{#if field == 0}
+			<span class="field"></span>
+		{:else if field == 1}
+			<span class="field" style="background-color:{data.ColorPlayer1}"></span>
+		{:else if field == 2}
+			<span class="field" style="background-color:{data.ColorPlayer2}"></span>
+		{/if}
+		{/each}
+		</div>
+	{/each}
+    </section>
+
+{:catch error}
+    <p style="color: red">{error.message}</p>
+{/await}
+</main>

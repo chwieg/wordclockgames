@@ -19,16 +19,21 @@ const (
 )
 
 type game struct {
-	Board        [nRows][nCols]int // bord[0][0] is upper left corner
-	AllowedMoves []int
-	ActivePlayer int
 	State        state
+	ActivePlayer int
+	ColorPlayer1 string
+	ColorPlayer2 string
+	AllowedMoves [nCols]bool
+	Board        [nRows][nCols]int // bord[0][0] is upper left corner
 }
 
 func newGame() game {
 	g := game{
 		State:        stRunning,
 		ActivePlayer: 1,
+		ColorPlayer1: "#00FF7F",
+		ColorPlayer2: "#00BFFF",
+
 	}
 	g.updateAllowedMoves()
 	return g
@@ -52,10 +57,11 @@ func (g *game) showBoard() {
 }
 
 func (g *game) updateAllowedMoves() {
-	g.AllowedMoves = nil
 	for i := 0; i < nCols; i++ {
 		if g.Board[0][i] == 0 {
-			g.AllowedMoves = append(g.AllowedMoves, i)
+			g.AllowedMoves[i] = true
+		} else {
+			g.AllowedMoves[i] = false
 		}
 	}
 }
@@ -64,12 +70,7 @@ func (g *game) isAllowedMove(col int) bool {
 	if col < 0 || col >= nCols {
 		return false
 	} else {
-		for _, allowedCol := range g.AllowedMoves {
-			if allowedCol == col {
-				return true
-			}
-		}
-		return false
+		return g.AllowedMoves[col]
 	}
 }
 

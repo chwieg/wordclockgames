@@ -1,0 +1,41 @@
+Essentiell
+----------
+
+1) Basis-Uhr mit Individualisierung realisieren
+	firmware: Änderung auf eigenes Frontdesign
+	firmware: Modi für neue Wörter in Front
+
+2) IR Fernbedienung duch Webapp auf Raspberry mit bluetooth ersetzen
+	Raspberry in Betrieb nehmen
+	Grundlegende Implementierung der IR / Bluetooth Komm. verstehen
+	Bluetooth mit Raspberry verstehen
+	Ansteuerung Bluetooth aus Backend
+	Fernbedienung in Backend nachbauen
+	go build machen und testen
+	Port für Backend freigeben
+	Frontend für Fernbedienung
+	svelte in backend einbinden
+
+3)	Erweiterung Bluetooth Komm. für "Game Mode"
+
+	Implementierung Ansteuerung Display für Animationen verstehen
+	Hinzufügen Game Mode auf uC
+	Ansteuerung Display im "Game Mode" auf uC umsetzen
+	Frontend für game mode zum laufen bringen
+	Bluetooth Kommunikation konzipieren
+	Bluetooth Kommunikation in Server umsetzen
+	Bluetooth Kommunikation in uC umsetzen
+
+4) Docker
+
+
+
+
+
+Verbesserungen
+--------------
+
+SMUI (svelte material UI) verwenden
+
+für Darstellung Board CSS grid verwenden:
+https://medium.com/sketch-app-sources/css-grid-einf%C3%BChrung-in-5-minuten-verstehen-und-in-sketch-umsetzen-9e9e8a16b07e

@@ -1,0 +1,16 @@
+
+> svelte-app@1.0.0 dev /home/christian/wortuhr/wordclockgames/frontend
+> rollup -c -w
+
+[1m[32mLiveReload enabled[39m[22m
+
+> svelte-app@1.0.0 start /home/christian/wortuhr/wordclockgames/frontend
+> sirv public "--dev"
+
+[H[2J
+  [32mYour application is ready~! 🚀
+
+[39m  [1m- Local:[22m      http://localhost:5000
+
+[7m LOGS [27m
+
