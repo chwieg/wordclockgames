@@ -2,7 +2,7 @@
  * Woerter_DE
  * Definition der deutschen Woerter fuer die Zeitansage.
  * Die Woerter sind Bitmasken fuer die Matrix.
- *
+ * FALSCH: Front siehe front_wiegand.txt
  *   01234567890
  * 0 ESKISTLFUNF
  * 1 ZEHNZWANZIG
@@ -41,15 +41,15 @@
 #define DE_H_EIN        matrix[5] |= 0b1110000000000000
 #define DE_H_EINS       matrix[5] |= 0b1111000000000000
 #define DE_H_ZWEI       matrix[5] |= 0b0000000111100000
-#define DE_H_DREI       matrix[6] |= 0b1111000000000000
-#define DE_H_VIER       matrix[6] |= 0b0000000111100000
-#define DE_H_FUENF      matrix[4] |= 0b0000000111100000
+#define DE_H_DREI       matrix[8] |= 0b1111000000000000
+#define DE_H_VIER       matrix[4] |= 0b0000000111100000
+#define DE_H_FUENF      matrix[8] |= 0b0000000111100000
 #define DE_H_SECHS      matrix[7] |= 0b1111100000000000
-#define DE_H_SIEBEN     matrix[8] |= 0b1111110000000000
+#define DE_H_SIEBEN     matrix[6] |= 0b1111110000000000
 #define DE_H_ACHT       matrix[7] |= 0b0000000111100000
 #define DE_H_NEUN       matrix[9] |= 0b0001111000000000
 #define DE_H_ZEHN       matrix[9] |= 0b1111000000000000
-#define DE_H_ELF        matrix[4] |= 0b0000011100000000
-#define DE_H_ZWOELF     matrix[8] |= 0b0000001111100000
+#define DE_H_ELF        matrix[8] |= 0b0000011100000000
+#define DE_H_ZWOELF     matrix[6] |= 0b0000001111100000
 
 #endif
