@@ -34,7 +34,7 @@ typedef enum eMode : byte
 #endif
   STD_MODE_BRIGHTNESS,
   STD_MODE_BLANK,
-  STD_MODE_COUNT,
+  STD_MODE_COUNT,  // dieser  Mode springt über die Funktion Mode-Button sofort wieder in den Normal-Modus
   // nicht manuell zu erreichender Modus...
   STD_MODE_NIGHT,
 
@@ -80,6 +80,8 @@ typedef enum eMode : byte
 #ifdef USE_EXT_MODE_DCF_DEBUG
   EXT_MODE_DCF_DEBUG,
 #endif
+  EXT_MODE_LOVE,    // neuer Mode für die Anzeige von LOVE
+  EXT_MODE_NAME,    // neuer Mode für die Anzeige des Namens
   EXT_MODE_COUNT
 } Mode;
 

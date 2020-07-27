@@ -1,10 +1,6 @@
 Essentiell
 ----------
 
-1) Basis-Uhr mit Individualisierung realisieren
-	firmware: Änderung auf eigenes Frontdesign
-	firmware: Modi für neue Wörter in Front
-
 2) IR Fernbedienung duch Webapp auf Raspberry mit bluetooth ersetzen
 	Raspberry in Betrieb nehmen
 	Grundlegende Implementierung der IR / Bluetooth Komm. verstehen

@@ -208,7 +208,7 @@
    Serial-Monitor muss mit der hier angegeben uebereinstimmen.
    Default: ausgeschaltet
 */
-// #define DEBUG
+#define DEBUG
 #include "Debug.h"
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
@@ -1339,6 +1339,21 @@ void loop() {
         break;
     }
 
+    // Quick'n'dirty hinzufügen des Modes Love
+    switch (mode) {
+        case EXT_MODE_LOVE:
+          renderer.clearScreenBuffer(matrix);
+          matrix[3] |= 0b0000101000000000;
+          matrix[5] |= 0b0000101000000000;
+          break;
+        case EXT_MODE_NAME:
+          renderer.clearScreenBuffer(matrix);
+          for (byte i=1; i<8; i++) {
+            matrix[i] |= 0b0000010000000000;
+          }
+          break;
+    }
+
     // Update mit onChange = true, weil sich hier (aufgrund needsUpdateFromRtc) immer was geaendert hat.
     // Entweder weil wir eine Sekunde weiter sind, oder weil eine Taste gedrueckt wurde.
     ledDriver.writeScreenBufferToMatrix(matrix, true, settings.getColor());
@@ -2180,7 +2195,8 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
           minutePlusPressed();
         }
         else {
-          setMode(EXT_MODE_LANGUAGE);
+          // setMode(EXT_MODE_LANGUAGE);
+          setMode(EXT_MODE_LOVE);  // Quick'n'dirty Patch Mode Love
         }
         break;
       case REMOTE_BUTTON_SECONDS:
