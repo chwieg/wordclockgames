@@ -82,6 +82,7 @@ typedef enum eMode : byte
 #endif
   EXT_MODE_LOVE,    // neuer Mode für die Anzeige von LOVE
   EXT_MODE_NAME,    // neuer Mode für die Anzeige des Namens
+  EXT_MODE_ALLON,   // neuer Mode für die Anzeige aller LEDs
   EXT_MODE_COUNT
 } Mode;
 

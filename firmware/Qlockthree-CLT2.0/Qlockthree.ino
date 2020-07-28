@@ -208,7 +208,7 @@
    Serial-Monitor muss mit der hier angegeben uebereinstimmen.
    Default: ausgeschaltet
 */
-#define DEBUG
+// #define DEBUG
 #include "Debug.h"
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
@@ -1351,6 +1351,11 @@ void loop() {
           for (byte i=1; i<8; i++) {
             matrix[i] |= 0b0000010000000000;
           }
+          break;
+        case EXT_MODE_ALLON:
+          renderer.setAllScreenBuffer(matrix);
+          break;
+        default:
           break;
     }
 
