@@ -21,7 +21,11 @@
         } 
     }
 		
-	async function putData(col=0) {
+	async function putData(col) {
+		const payload = JSON.stringify({
+      			column: col
+    		});
+		console.log("payload: "+payload);
 		const resp = await fetch(url, {
 		    method: 'PUT',
     		body: JSON.stringify({
@@ -32,8 +36,15 @@
     		}
 		})
 		const json = await resp.json()
-		game = json;
-
+     if (resp.ok) { 
+			console.log("response: "+resp.body);
+       //     return json;
+			game = json;
+        } else { 
+			console.log("Error: "+resp);
+            //throw new Error(json); 
+            throw new Error(resp); 
+        } 
 	}
 
 </script>
@@ -44,6 +55,12 @@
 <p>Loading...</p>
 
 {:then result}
+{#each result.AllowedMoves as el, i}
+	<button class="button" on:click={() => {putData(i)
+console.log("Index: "+i)}}>
+		Clicked
+	</button>
+{/each}
 	<button class="button" on:click={() => getData()}>
 		Clicked
 	</button>
@@ -54,6 +71,13 @@
 <p>Act. Player:   {result.ActivePlayer}</p>
 <p>Allowed Moves: {result.AllowedMoves}</p>
 <p>Board:         {result.Board}</p>
+
+{#each result.Board as row}
+
+<p>{row}</p>
+
+{/each}
+
 {:catch error}
 <p>Error...</p>
 {/await}

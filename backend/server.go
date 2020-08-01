@@ -49,8 +49,8 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:	// Serve the resource.
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 		json, _ := json.Marshal(g)
+		w.WriteHeader(http.StatusOK)
 		w.Write(json)
 	case http.MethodPut:	// Update an existing record.
 		w.Header().Set("Content-Type", "application/json")
@@ -72,13 +72,12 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		w.WriteHeader(http.StatusOK)
-
 		g.move(d.Column)
 		g.State = g.checkBoard()
 		g.switchActivePlayer()
 
 		json, _ := json.Marshal(g)
+		w.WriteHeader(http.StatusOK)
 		w.Write(json)
 	}
 	/*	// debugging
