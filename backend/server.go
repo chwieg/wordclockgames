@@ -19,15 +19,28 @@ func setupResponse(w *http.ResponseWriter, req *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
 
+func hiHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Entering Hi-Handler!")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Hi!"))
+}
+
 func conFourNewGameHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Entering ConFourNewGame-Handler!")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
+	fmt.Println("Creating new Game...")
 	g = newGame()
+	fmt.Println("done.")
+	fmt.Println("Writing...")
 	json, _ := json.Marshal(g)
 	w.Write(json)
+	fmt.Println("done.")
 }
 func conFourHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Entering ConFour-Handler!")
 	setupResponse(&w, r)
 	fmt.Println("Request Method: ", r.Method)
 	if (*r).Method == "OPTIONS" {
@@ -78,7 +91,9 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	g = newGame()
-	g.showBoard()
+//	g.showBoard()
+	fmt.Println("Server running at localhost:8080/wordclock/connectfour")
+	http.HandleFunc("/hi", hiHandler)
 	http.HandleFunc("/wordclock/connectfour", conFourHandler)
 	http.HandleFunc("/wordclock/connectfour/newgame", conFourNewGameHandler)
 	http.ListenAndServe(":8080", nil)

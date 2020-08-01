@@ -4,15 +4,20 @@
 	let foo = 'baz'
 	let bar = 'qux'
 	let url = "http://localhost:8080/wordclock/connectfour"
+	//let url = "http://ip.jsontest.com/"
 	let game = getData();
 
  	async function getData() { 
-        const resp = await fetch(url); 
-	 	const json = await resp.json(); 
-        if (response.ok) { 
+		console.log("fetching data");
+		const resp = await fetch(url); 
+		const json = await resp.json(); 
+        if (resp.ok) { 
+			console.log("response: "+resp.body);
             return json;
         } else { 
-            throw new Error(json); 
+			console.log("Error: "+resp);
+            //throw new Error(json); 
+            throw new Error(resp); 
         } 
     }
 		
@@ -35,9 +40,28 @@
 
 <style>
 </style>
+{#await game}
+<p>Loading...</p>
 
+{:then result}
+	<button class="button" on:click={() => getData()}>
+		Clicked
+	</button>
 
-{#await game then result}
+<!--<p>ip:         {result.ip}</p> -->
+<p> Result: </p>
+<p>State:         {result.State}</p>
+<p>Act. Player:   {result.ActivePlayer}</p>
+<p>Allowed Moves: {result.AllowedMoves}</p>
+<p>Board:         {result.Board}</p>
+{:catch error}
+<p>Error...</p>
+{/await}
+<!--
+{#await game}
+<p>Loading...</p>
+
+{:then result}
 <div>
 {#each arr as el, i}
 	<button class="button" on:click={() => putData(i)}>
@@ -58,5 +82,7 @@
 <p>Act. Player:   {result.ActivePlayer}</p>
 <p>Allowed Moves: {result.AllowedMoves}</p>
 <p>Board:         {result.Board}</p>
-
+{:catch error}
+<p>Error...</p>
 {/await}
+-->

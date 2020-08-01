@@ -2,8 +2,24 @@ Essentiell
 ----------
 
 2) IR Fernbedienung duch Webapp auf Raspberry mit bluetooth ersetzen
-	Raspberry in Betrieb nehmen
-	Grundlegende Implementierung der IR / Bluetooth Komm. verstehen
+	Raspberry in Betrieb nehmen: ok
+	Grundlegende Implementierung der IR / Bluetooth Komm. verstehen:
+		Verbindung mit Uhr über bluetoothctl erfolgreich
+		(trust und connect ohne pairing)
+		Name BT19730, MAC: 00:13:AA:00:BC:8C
+
+		todo: wie Kommandos senden?
+		wie die das in Programm nachbauen?
+		
+		Versuch über RFCOMM Protokoll
+		entsprechned go Beispiel
+		https://golang.org/src/cmd/vendor/golang.org/x/sys/unix/syscall_linux.go?h=bluetooth
+		Zeile 530ff
+
+		Kommando für Knopf Region schicken:
+		0xFF20DF (aus IRTrans..CLT.cpp)
+
+
 	Bluetooth mit Raspberry verstehen
 	Ansteuerung Bluetooth aus Backend
 	Fernbedienung in Backend nachbauen
