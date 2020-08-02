@@ -1,6 +1,12 @@
 Essentiell
 ----------
 
+UI anpassen:
+	Eindeutig zeigen wenn jemand gewonnen hat
+	(d.h. aus GameState und Active Player erkennen)
+Backend:
+	AllowedMoves alle auf false setzen, wenn jemand gewonnen hat
+
 2) IR Fernbedienung duch Webapp auf Raspberry mit bluetooth ersetzen
 	Raspberry in Betrieb nehmen: ok
 	Grundlegende Implementierung der IR / Bluetooth Komm. verstehen:
@@ -46,8 +52,8 @@ Essentiell
 
 Verbesserungen
 --------------
-
-SMUI (svelte material UI) verwenden
-
-für Darstellung Board CSS grid verwenden:
-https://medium.com/sketch-app-sources/css-grid-einf%C3%BChrung-in-5-minuten-verstehen-und-in-sketch-umsetzen-9e9e8a16b07e
+frontend:
+	SMUI (svelte material UI) verwenden
+	https://github.com/axios/axios verwenden
+	für Darstellung Board CSS grid verwenden:
+		https://medium.com/sketch-app-sources/css-grid-einf%C3%BChrung-in-5-minuten-verstehen-und-in-sketch-umsetzen-9e9e8a16b07e

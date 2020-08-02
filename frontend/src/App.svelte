@@ -2,7 +2,9 @@
 	
 	let url =        "http://localhost:8080/con4"
 	let urlNewGame = url+"/newgame"
-	let game = getData();
+	let game = getData()
+	let i = 0
+	let arr = []
 
 	async function getData() { 
 		console.log("fetching data");
@@ -51,11 +53,16 @@
 			console.log("response: "+resp.body);
        //     return json;
 			game = json;
+			arr = !game.AllowedMoves
         } else { 
 			console.log("Error: "+resp);
             //throw new Error(json); 
             throw new Error(resp); 
         } 
+	}
+	
+	function isAllowed(i, arr) {
+		return !arr[i]
 	}
 
 </script>
@@ -69,7 +76,7 @@
 {:then result}
 	<div>
 	{#each result.AllowedMoves as el, i}
-		<button class="button" on:click={() => {putData(i)
+		<button class="button" disabled='{isAllowed(i,result.AllowedMoves)}' on:click={() => {putData(i)
 			console.log("Index: "+i)}}>
 			Spalte {i}
 		</button>
