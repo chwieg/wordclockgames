@@ -1,11 +1,12 @@
 Essentiell
 ----------
 
-UI anpassen:
+ 
+UI Design machen:
+	prinzipielles Design machen
 	Eindeutig zeigen wenn jemand gewonnen hat
+	oder unentschieden ist
 	(d.h. aus GameState und Active Player erkennen)
-Backend:
-	AllowedMoves alle auf false setzen, wenn jemand gewonnen hat
 
 2) IR Fernbedienung duch Webapp auf Raspberry mit bluetooth ersetzen
 	Raspberry in Betrieb nehmen: ok

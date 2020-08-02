@@ -62,8 +62,10 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		g.move(d.Column)
-		g.State = g.checkBoard()
+		g.updateState()
+		g.updateAllowedMoves()
 		g.switchActivePlayer()
+
 
 		json, _ := json.Marshal(g)
 		w.WriteHeader(http.StatusOK)

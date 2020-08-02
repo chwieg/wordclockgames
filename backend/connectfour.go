@@ -7,8 +7,8 @@ import (
 	//"time"
 )
 
-const nRows = 10
-const nCols = 11
+const nRows = 6 // max. possible for display: 10
+const nCols = 7 // max. possible for display: 11
 
 type state int
 
@@ -58,8 +58,8 @@ func (g *game) showBoard() {
 
 func (g *game) updateAllowedMoves() {
 	for i := 0; i < nCols; i++ {
-		if g.Board[0][i] == 0 {
-			g.AllowedMoves[i] = true
+		if g.State == stRunning {
+			g.AllowedMoves[i] = g.Board[0][i] == 0
 		} else {
 			g.AllowedMoves[i] = false
 		}
@@ -84,7 +84,7 @@ func (g *game) move(col int) {
 	}
 }
 
-func (g *game) checkBoard() state {
+func (g *game) updateState() {
 
 	// check vertical
 	for j := 0; j < nCols; j++ {
@@ -93,7 +93,8 @@ func (g *game) checkBoard() state {
 			if g.Board[i][j] == g.ActivePlayer {
 				cntFields += 1
 				if cntFields == 4 {
-					return stStopWinner
+					g.State = stStopWinner
+					return
 				}
 			} else {
 				cntFields = 0
@@ -107,7 +108,8 @@ func (g *game) checkBoard() state {
 			if g.Board[i][j] == g.ActivePlayer {
 				cntFields += 1
 				if cntFields == 4 {
-					return stStopWinner
+					g.State = stStopWinner
+					return
 				}
 			} else {
 				cntFields = 0
@@ -125,7 +127,8 @@ func (g *game) checkBoard() state {
 			if g.Board[i+j][j] == g.ActivePlayer {
 				cntFields += 1
 				if cntFields == 4 {
-					return stStopWinner
+					g.State =  stStopWinner
+					return
 				}
 			} else {
 				cntFields = 0
@@ -143,7 +146,8 @@ func (g *game) checkBoard() state {
 			if g.Board[i-j][j] == g.ActivePlayer {
 				cntFields += 1
 				if cntFields == 4 {
-					return stStopWinner
+					g.State =  stStopWinner
+					return
 				}
 			} else {
 				cntFields = 0
@@ -151,16 +155,19 @@ func (g *game) checkBoard() state {
 		}
 	}
 
-	// check if draw
+	// check if running
 	for j := 0; j < nCols; j++ {
 		for i := 0; i < nRows; i++ {
 			if g.Board[i][j] == 0 {
-				return stRunning
+				g.State = stRunning
+				return
 			}
 		}
 	}
-	return stStopDraw
 
+	// otherwise it is a draw
+	g.State = stStopDraw
+	return
 }
 func (g *game) switchActivePlayer() {
 if g.State == stRunning {

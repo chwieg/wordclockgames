@@ -3,6 +3,8 @@
 	let url =        "http://localhost:8080/con4"
 	let urlNewGame = url+"/newgame"
 	let game = getData()
+	let buttonLabels = "EIVIERT"
+	// variables for Binding buttons disabled 
 	let i = 0
 	let arr = []
 
@@ -78,7 +80,7 @@
 	{#each result.AllowedMoves as el, i}
 		<button class="button" disabled='{isAllowed(i,result.AllowedMoves)}' on:click={() => {putData(i)
 			console.log("Index: "+i)}}>
-			Spalte {i}
+			{buttonLabels.charAt(i)}
 		</button>
 	{/each}
 	</div>
