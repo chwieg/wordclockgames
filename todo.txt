@@ -15,20 +15,21 @@ UI Design machen:
 		(trust und connect ohne pairing)
 		Name BT19730, MAC: 00:13:AA:00:BC:8C
 
-		todo: wie Kommandos senden?
-		wie die das in Programm nachbauen?
+		BT-Device ist kein HC-05 mit RFCOMM (geht nicht!)
+		sondern HM-10, d.h. BLE mit Verwendung von GATT
+		Erfolgreiche Kommunikation interaktiv über gatttool
+			> gatttool -b 00:13:AA:00:BC:8C -I
+			> connect
+		z.B. Kommando 0xFF906F für Farbe Rot:
+			- in Dez.: 16748655
+			- Jede Ziffer der Zahl als ASCII-Zeichen darstellen,
+			- d.h. "1" --> 0x31, "6" --> 0x36, usw.
+			- alles ASCII Codes als Hexwerte ohne Trennzeichen und ohne \n schicken in gatttool:
+			  > char-write-req 0x0025 3136373438363535
 		
-		Versuch über RFCOMM Protokoll
-		entsprechned go Beispiel
-		https://golang.org/src/cmd/vendor/golang.org/x/sys/unix/syscall_linux.go?h=bluetooth
-		Zeile 530ff
-
-		Kommando für Knopf Region schicken:
-		0xFF20DF (aus IRTrans..CLT.cpp)
-
+	Ansteuerung Bluetooth aus Backend
 
 	Bluetooth mit Raspberry verstehen
-	Ansteuerung Bluetooth aus Backend
 	Fernbedienung in Backend nachbauen
 	go build machen und testen
 	Port für Backend freigeben

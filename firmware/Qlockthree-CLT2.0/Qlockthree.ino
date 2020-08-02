@@ -208,7 +208,7 @@
    Serial-Monitor muss mit der hier angegeben uebereinstimmen.
    Default: ausgeschaltet
 */
-// #define DEBUG
+#define DEBUG
 #include "Debug.h"
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
@@ -839,6 +839,7 @@ void loop() {
   //
   // FPS
   //
+  /*
 #ifdef DEBUG
   frames++;
   if (lastFpsCheck > millis()) {
@@ -852,7 +853,7 @@ void loop() {
     frames = 0;
   }
 #endif
-
+*/
   //
   // Dimmung.
   //
@@ -1412,8 +1413,15 @@ void loop() {
 
 #ifdef REMOTE_BLUETOOTH
   unsigned int lastIrCodeBT = 0;
+  unsigned long serialInput = 10;
   while (Serial.available() > 0) {
-    lastIrCodeBT = irTranslatorBT.buttonForCode(Serial.parseInt());
+    DEBUG_PRINTLN(F("BT Serial available:"));
+    serialInput = Serial.parseInt();
+    DEBUG_PRINTLN2(serialInput, DEC);
+    DEBUG_PRINTLN2(serialInput, HEX);
+    lastIrCodeBT = irTranslatorBT.buttonForCode(serialInput); 
+    DEBUG_PRINTLN(F("Decoded to button:"));
+    DEBUG_PRINTLN2(lastIrCodeBT, DEC);
     Serial.read();
   }
   if (lastIrCodeBT != 0) {
