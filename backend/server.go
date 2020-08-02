@@ -17,25 +17,19 @@ func setupResponse(w *http.ResponseWriter, req *http.Request) {
 	//  (*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	(*w).Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS, PUT")
 	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-}
-
-func hiHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Entering Hi-Handler!")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hi!"))
+	(*w).Header().Set("Content-Type", "application/json")
 }
 
 func conFourNewGameHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Entering ConFourNewGame-Handler!")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	setupResponse(&w, r)
 
 	fmt.Println("Creating new Game...")
 	g = newGame()
 	fmt.Println("done.")
 	fmt.Println("Writing...")
 	json, _ := json.Marshal(g)
+	w.WriteHeader(http.StatusOK)
 	w.Write(json)
 	fmt.Println("done.")
 }
@@ -48,25 +42,20 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodGet:	// Serve the resource.
-		w.Header().Set("Content-Type", "application/json")
 		json, _ := json.Marshal(g)
 		w.WriteHeader(http.StatusOK)
 		w.Write(json)
 	case http.MethodPut:	// Update an existing record.
-		w.Header().Set("Content-Type", "application/json")
-
 		var d clientData
 		err := json.NewDecoder(r.Body).Decode(&d)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-
 		if g.State != stRunning {
 			http.Error(w, "Game is already over", http.StatusBadRequest)
 			return
 		}
-
 		if !g.isAllowedMove(d.Column) {
 			http.Error(w, "Invalid value for Column", http.StatusBadRequest)
 			return
@@ -91,10 +80,9 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	g = newGame()
 //	g.showBoard()
-	fmt.Println("Server running at localhost:8080/wordclock/connectfour")
-	http.HandleFunc("/hi", hiHandler)
-	http.HandleFunc("/wordclock/connectfour", conFourHandler)
-	http.HandleFunc("/wordclock/connectfour/newgame", conFourNewGameHandler)
+	fmt.Println("Server running at localhost:8080/con4")
+	http.HandleFunc("/con4", conFourHandler)
+	http.HandleFunc("/con4/newgame", conFourNewGameHandler)
 	http.ListenAndServe(":8080", nil)
 
 }
