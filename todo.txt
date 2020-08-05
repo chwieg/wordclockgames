@@ -27,10 +27,16 @@ UI Design machen:
 			- alles ASCII Codes als Hexwerte ohne Trennzeichen und ohne \n schicken in gatttool:
 			  > char-write-req 0x0025 3136373438363535
 		
-	Ansteuerung Bluetooth aus Backend
+	Ansteuerung Bluetooth aus Backend: ok
+	funktioniert prinzipiell, s. bluetooth_proto.go
+
+	Fernbedienung in Backend nachbauen
+
+
+
 
 	Bluetooth mit Raspberry verstehen
-	Fernbedienung in Backend nachbauen
+
 	go build machen und testen
 	Port für Backend freigeben
 	Frontend für Fernbedienung
