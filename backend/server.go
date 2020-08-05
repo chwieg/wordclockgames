@@ -6,8 +6,12 @@ import (
 	"net/http"
 )
 
-type clientData struct {
+type dataPutGame struct {
 	Column int
+}
+
+type dataPutButton struct {
+	ButtonCode string
 }
 
 var g game
@@ -33,6 +37,7 @@ func conFourNewGameHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(json)
 	fmt.Println("done.")
 }
+
 func conFourHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Entering ConFour-Handler!")
 	setupResponse(&w, r)
@@ -46,7 +51,7 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(json)
 	case http.MethodPut:	// Update an existing record.
-		var d clientData
+		var d dataPutGame
 		err := json.NewDecoder(r.Body).Decode(&d)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -79,12 +84,48 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
+func remoteCtrlHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Entering Remote-Control-Handler!")
+	setupResponse(&w, r)
+	fmt.Println("Request Method: ", r.Method)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	switch r.Method {
+	case http.MethodGet:	// Serve the resource.
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Nothing to GET here"))
+	case http.MethodPut:	// Update an existing record.
+		var d dataPutButton
+		err := json.NewDecoder(r.Body).Decode(&d)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		sendBtButtonCode(d.ButtonCode)
+
+		json, _ := json.Marshal(d)
+		w.WriteHeader(http.StatusOK)
+		w.Write(json)
+	}
+	/*	// debugging
+		json, err := json.Marshal(g)
+		fmt.Println(g)
+		fmt.Println("err:  ", err)
+		fmt.Println("json: ", json)
+	*/
+}
+
 func main() {
+
 	g = newGame()
 //	g.showBoard()
+
 	fmt.Println("Server running at localhost:8080/con4")
 	http.HandleFunc("/con4", conFourHandler)
 	http.HandleFunc("/con4/newgame", conFourNewGameHandler)
+	http.HandleFunc("/remote", remoteCtrlHandler)
 	http.ListenAndServe(":8080", nil)
 
 }
