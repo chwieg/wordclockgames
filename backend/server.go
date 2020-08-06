@@ -103,6 +103,7 @@ func remoteCtrlHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		fmt.Printf("Sending button code: %v\n", d.ButtonCode)
 		sendBtButtonCode(d.ButtonCode)
 
 		json, _ := json.Marshal(d)

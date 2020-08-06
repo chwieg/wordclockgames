@@ -28,9 +28,10 @@ func hex2decAscii(hexStr string) string {
 }
 
 func sendBtButtonCode(buttonCode string) {
-	gattCmd := "sudo gatttool -i hci0 -b 00:13:AA:00:BC:8C --char-write-req -a 0x0025 -n "+
-		hex2decAscii(buttonCode)
-	cmd := exec.Command("/bin/sh", "-c", gattCmd)
+	//gattCmd := "gatttool -i hci0 -b 00:13:AA:00:BC:8C --char-write-req -a 0x0025 -n "+
+		//hex2decAscii(buttonCode)
+	cmd := exec.Command("gatttool", "-i", "hci0", "-b", "00:13:AA:00:BC:8C", "--char-write-req", "-a", "0x0025", "-n",
+		hex2decAscii(buttonCode))
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)

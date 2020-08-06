@@ -30,16 +30,14 @@ UI Design machen:
 	Ansteuerung Bluetooth aus Backend: ok
 	funktioniert prinzipiell, s. bluetooth_proto.go
 
-	Fernbedienung in Backend nachbauen
-
-
-
+	Fernbedienung in Backend nachbauen: ok
+	Fernbedienung in Frontend nachbauen: ok
+	Umstellung auf echte IP von localhost: ok
 
 	Bluetooth mit Raspberry verstehen
 
 	go build machen und testen
-	Port für Backend freigeben
-	Frontend für Fernbedienung
+	Firewall einrichten: Ports für Backend und Frontend freigeben
 	svelte in backend einbinden
 
 3)	Erweiterung Bluetooth Komm. für "Game Mode"

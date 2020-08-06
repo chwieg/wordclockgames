@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "Qlockthree",
+			"path": "firmware/PlatformIO/Qlockthree"
+		},
+		{
+			"path": "backend"
+		},
+		{
+			"path": "frontend"
+		}
+	],
+	"settings": {}
+}
