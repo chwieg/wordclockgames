@@ -1,5 +1,3 @@
-Essentiell
-----------
 
  
 UI Design machen:
@@ -8,8 +6,7 @@ UI Design machen:
 	oder unentschieden ist
 	(d.h. aus GameState und Active Player erkennen)
 
-2) IR Fernbedienung duch Webapp auf Raspberry mit bluetooth ersetzen
-	Raspberry in Betrieb nehmen: ok
+2) IR Fernbedienung duch Webapp mit bluetooth ersetzen
 	Grundlegende Implementierung der IR / Bluetooth Komm. verstehen:
 		Verbindung mit Uhr über bluetoothctl erfolgreich
 		(trust und connect ohne pairing)
@@ -27,39 +24,55 @@ UI Design machen:
 			- alles ASCII Codes als Hexwerte ohne Trennzeichen und ohne \n schicken in gatttool:
 			  > char-write-req 0x0025 3136373438363535
 		
-	Ansteuerung Bluetooth aus Backend: ok
+	(ok) Ansteuerung Bluetooth aus Backend
 	funktioniert prinzipiell, s. bluetooth_proto.go
 
-	Fernbedienung in Backend nachbauen: ok
-	Fernbedienung in Frontend nachbauen: ok
-	Umstellung auf echte IP von localhost: ok
+	Bluetooth Kommunikation in uC umsetzen
+	(ok) Fernbedienung in Backend nachbauen
+	(ok) Fernbedienung in Frontend nachbauen
+	(ok) Umstellung auf echte IP von localhost
 
-	Bluetooth mit Raspberry verstehen
-
-	go build machen und testen
-	Firewall einrichten: Ports für Backend und Frontend freigeben
-	svelte in backend einbinden
 
 3)	Erweiterung Bluetooth Komm. für "Game Mode"
 
-	Implementierung Ansteuerung Display für Animationen verstehen
-	Hinzufügen Game Mode auf uC
-	Ansteuerung Display im "Game Mode" auf uC umsetzen
-	Frontend für game mode zum laufen bringen
-	Bluetooth Kommunikation konzipieren
-	Bluetooth Kommunikation in Server umsetzen
+	(ok) Frontend für game mode zum laufen bringen
+	(ok) Implementierung Ansteuerung Display für Animationen verstehen
+	(ok) Hinzufügen Game Mode auf uC
+	(ok) Bluetooth Kommunikation konzipieren
+		- einfach die zwei Farben entweder als RGB oder byte für Enum auf Uhr schicken,
+		  danach die Werte für die 42 Felder
+		- noch offen, ob auf uC die Bytes in einen Buffer mit ReadBytes() gelesen werden
+		  (Speicher, aber kann dafür z.B. an Led-Driver übergeben werden)
+		  oder sequentiell mit Read() gelesen und gleich verarbeitet werden
+		  (macht direkten Aufruf der Low-Level Funktionen aus der Bib erforderlich,
+		   außerdem Risiko des TimeOut, falls Verarbeitung von jedem Byte zu lange dauert?)
+		   spart dafür etwas Speicher)
 	Bluetooth Kommunikation in uC umsetzen
-
-4) Docker
-
-
+	Ansteuerung Display im "Game Mode" auf uC umsetzen
+	Bluetooth Kommunikation in Server umsetzen
 
 
+4)	Echter Build
+	Build machen go
+	Build machen frontend
+	Start der kompilierten Server
 
-Verbesserungen
---------------
+
+5) Transfer auf Raspberry
+	
+	(ok) Raspberry in Betrieb nehmen
+	Bluetooth mit Raspberry verstehen
+	Firewall einrichten: Ports für Backend und Frontend freigeben
+	Build für Raspberry
+	Docker
+
+
+
+
+6) Verbesserungen
+
 frontend:
 	SMUI (svelte material UI) verwenden
 	https://github.com/axios/axios verwenden
-	für Darstellung Board CSS grid verwenden:
+	(ok) für Darstellung Board CSS grid verwenden:
 		https://medium.com/sketch-app-sources/css-grid-einf%C3%BChrung-in-5-minuten-verstehen-und-in-sketch-umsetzen-9e9e8a16b07e

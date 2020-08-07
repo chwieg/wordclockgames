@@ -872,6 +872,8 @@ void setup() {
 #endif
 }
 
+#define NUM_BYTES_BT_CON4 50 // Anzahl an Bytes die im Game Mode übertragen werden
+byte tmp_cnt = 0; // nur fürs Schnelle Testen
 /**
    loop() wird endlos auf alle Ewigkeit vom Microcontroller durchlaufen
 */
@@ -1380,7 +1382,7 @@ void loop() {
         break;
     }
 
-    // Quick'n'dirty hinzufügen des Modes Love
+    // Quick'n'dirty hinzufügen der eigenen neuen Modes
     switch (mode) {
         case EXT_MODE_LOVE:
           renderer.clearScreenBuffer(matrix);
@@ -1395,6 +1397,10 @@ void loop() {
           break;
         case EXT_MODE_ALLON:
           renderer.setAllScreenBuffer(matrix);
+          break;
+        case EXT_MODE_CON4:
+          renderer.clearScreenBuffer(matrix);
+          matrix[4] |= 0b0001110000000000;
           break;
         default:
           break;
@@ -1454,15 +1460,29 @@ void loop() {
 #ifdef REMOTE_BLUETOOTH
   unsigned int lastIrCodeBT = 0;
   unsigned long serialInput = 10;
+  char btReadBuffer[NUM_BYTES_BT_CON4];
+  size_t numBtReadBytes = 0;
   while (Serial.available() > 0) {
     DEBUG_PRINTLN(F("BT Serial available:"));
-    serialInput = Serial.parseInt();
-    DEBUG_PRINTLN2(serialInput, DEC);
-    DEBUG_PRINTLN2(serialInput, HEX);
-    lastIrCodeBT = irTranslatorBT.buttonForCode(serialInput); 
-    DEBUG_PRINTLN(F("Decoded to button:"));
-    DEBUG_PRINTLN2(lastIrCodeBT, DEC);
-    Serial.read();
+    if (mode==EXT_MODE_CON4 && tmp_cnt<10) {
+      tmp_cnt++;
+      numBtReadBytes = Serial.readBytes(btReadBuffer, NUM_BYTES_BT_CON4);
+      Serial.print("number of bytes received: ");
+      Serial.println(numBtReadBytes);
+      for (byte i=0; i<numBtReadBytes; i++) {
+        Serial.print(btReadBuffer[i], HEX);
+        Serial.print(" ");
+      }
+      Serial.println();
+    } else {
+      serialInput = Serial.parseInt();
+      DEBUG_PRINTLN2(serialInput, DEC);
+      DEBUG_PRINTLN2(serialInput, HEX);
+      lastIrCodeBT = irTranslatorBT.buttonForCode(serialInput); 
+      DEBUG_PRINTLN(F("Decoded to button:"));
+      DEBUG_PRINTLN2(lastIrCodeBT, DEC);
+      Serial.read();
+    }
   }
   if (lastIrCodeBT != 0) {
     remoteAction(lastIrCodeBT, &irTranslatorBT);
