@@ -514,6 +514,46 @@ LedDriverLPD8806 ledDriver(13, 11);
 
 #endif
 
+
+/**
+ * function prototypes
+ */
+void updateFromRtc();
+int freeRam();
+void setup();
+void loop();
+#ifdef EVENTS
+  void doubleEvtModePressed();
+
+#endif
+void doubleExtModePressed();
+void modePressed();
+void hourPlusPressed();
+void minutePlusPressed();
+void enableDcf(boolean enable);
+void manageNewDCF77Data();
+void doubleStdModeNormalPressed();
+void setDisplayToToggle();
+void setDisplayToBlank();
+void setDisplayToResume();
+void setDisplayBrighter();
+void setDisplayDarker();
+void setDisplayBrightness(byte);
+void enableFallBackCounter(byte);
+void disableFallBackCounter();
+void updateFallBackCounter();
+void incDecMinutes(boolean);
+void incDecHours(boolean);
+void resetSeconds();
+#if defined(REMOTE_BLUETOOTH) || !defined(REMOTE_NO_REMOTE)
+  void remoteAction(unsigned int, IRTranslator*);
+
+#endif
+void setMode(Mode);
+bool isCurrentTimeInNightRange();
+
+
+
 /**
    Der IR-Remote-Control-Receiver.
 */
@@ -2316,6 +2356,3 @@ bool isCurrentTimeInNightRange() {
            ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) ||
              (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) ) );
 }
-
-
-
