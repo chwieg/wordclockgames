@@ -39,8 +39,8 @@ Renderer::Renderer() {
 /**
    Ein Zufallsmuster erzeugen (zum Testen der LEDs)
 */
-void Renderer::scrambleScreenBuffer(uint16_t matrix[16]) {
-  for (uint8_t i = 0; i < 16; i++) {
+void Renderer::scrambleScreenBuffer(word matrix[16]) {
+  for (byte i = 0; i < 16; i++) {
     matrix[i] = random(65536);
   }
 }
@@ -49,8 +49,8 @@ void Renderer::scrambleScreenBuffer(uint16_t matrix[16]) {
    Die Matrix loeschen (zum Stromsparen, DCF77-Empfang
    verbessern etc.)
 */
-void Renderer::clearScreenBuffer(uint16_t matrix[16]) {
-  for (uint8_t i = 0; i < 16; i++) {
+void Renderer::clearScreenBuffer(word matrix[16]) {
+  for (byte i = 0; i < 16; i++) {
     matrix[i] = 0;
   }
 }
@@ -58,8 +58,8 @@ void Renderer::clearScreenBuffer(uint16_t matrix[16]) {
 /**
    Die Matrix komplett einschalten (zum Testen der LEDs)
 */
-void Renderer::setAllScreenBuffer(uint16_t matrix[16]) {
-  for (uint8_t i = 0; i < 16; i++) {
+void Renderer::setAllScreenBuffer(word matrix[16]) {
+  for (byte i = 0; i < 16; i++) {
     matrix[i] = 65535;
   }
 }
@@ -67,7 +67,7 @@ void Renderer::setAllScreenBuffer(uint16_t matrix[16]) {
 /**
    Setzt die Wortminuten, je nach hours/minutes.
 */
-void Renderer::setMinutes(char hours, uint8_t minutes, uint8_t language, uint16_t matrix[16]) {
+void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[16]) {
   while (hours < 0) {
     hours += 24;
   }
@@ -735,7 +735,7 @@ void Renderer::setMinutes(char hours, uint8_t minutes, uint8_t language, uint16_
    dazuschreiben und EIN statt EINS, falls es 1 ist.
    (Zumindest im Deutschen)
 */
-void Renderer::setHours(uint8_t hours, boolean glatt, uint8_t language, uint16_t matrix[16]) {
+void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16]) {
   
   switch (language) {
 #ifdef ENABLE_LANGUAGE_DE
@@ -1177,10 +1177,10 @@ void Renderer::setHours(uint8_t hours, boolean glatt, uint8_t language, uint16_t
 /**
    Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
 */
-void Renderer::setCorners(uint8_t minutes, boolean cw, uint16_t matrix[16]) {
-    uint8_t b_minutes = minutes % 5;
-    for (uint8_t i = 0; i < b_minutes; i++) {
-        uint8_t j;
+void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
+    byte b_minutes = minutes % 5;
+    for (byte i = 0; i < b_minutes; i++) {
+        byte j;
         if (cw) {
           // j: 1, 0, 3, 2
           j = (1 - i + 4) % 4;
@@ -1199,7 +1199,7 @@ void Renderer::setCorners(uint8_t minutes, boolean cw, uint16_t matrix[16]) {
 /**
  * Schalte die Alarm-LED ein
  */
-void Renderer::activateAlarmLed(uint16_t matrix[16]) {
+void Renderer::activateAlarmLed(word matrix[16]) {
     #ifdef USE_INDIVIDUAL_CATHODES
         matrix[4] |= 0b0000000000000001;
     #else
@@ -1210,7 +1210,7 @@ void Renderer::activateAlarmLed(uint16_t matrix[16]) {
 /**
  * Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
  */
-void Renderer::cleanuint16_tsForAlarmSettingMode(uint8_t language, uint16_t matrix[16]) {
+void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
   switch (language) {
 #ifdef ENABLE_LANGUAGE_DE
     case LANGUAGE_DE_DE:
@@ -1262,7 +1262,7 @@ void Renderer::cleanuint16_tsForAlarmSettingMode(uint8_t language, uint16_t matr
 /**
  * Sprachlicher Spezialfall fuer Franzoesisch.
  */
-void Renderer::FR_hours(uint8_t hours, uint16_t matrix[16]) {
+void Renderer::FR_hours(byte hours, word matrix[16]) {
     if ((hours == 1) || (hours == 13)) {
         FR_HEURE;
     } else if ((hours == 0) || (hours == 12) || (hours == 24)) {
@@ -1277,7 +1277,7 @@ void Renderer::FR_hours(uint8_t hours, uint16_t matrix[16]) {
 /**
  * Sprachlicher Spezialfall fuer Italienisch.
  */
-void Renderer::IT_hours(uint8_t hours, uint16_t matrix[16]) {
+void Renderer::IT_hours(byte hours, word matrix[16]) {
     if ((hours != 1) && (hours != 13)) {
         IT_SONOLE;
     } else {
@@ -1290,7 +1290,7 @@ void Renderer::IT_hours(uint8_t hours, uint16_t matrix[16]) {
 /**
  * Sprachlicher Spezialfall fuer Spanisch.
  */
-void Renderer::ES_hours(uint8_t hours, uint16_t matrix[16]) {
+void Renderer::ES_hours(byte hours, word matrix[16]) {
     if ((hours == 1) || (hours == 13)) {
         ES_ESLA;
     } else {
@@ -1299,10 +1299,10 @@ void Renderer::ES_hours(uint8_t hours, uint16_t matrix[16]) {
 }
 #endif
 
-void Renderer::setMenuText(const char* menuText, eTextPos textPos, uint16_t matrix[16]) {
+void Renderer::setMenuText(const char* menuText, eTextPos textPos, word matrix[16]) {
   if ( strlen(menuText) == 2 ) {
-    for (uint8_t i = 0; i < 5; i++) {
-      for (uint8_t j = 0; j < strlen(menuText); j++) {
+    for (byte i = 0; i < 5; i++) {
+      for (byte j = 0; j < strlen(menuText); j++) {
         if (!isNumber(menuText[j])) {
           matrix[textPos + i] |= pgm_read_byte_near(&(staben[menuText[j] - 'A'][i])) << (5 + ((j + 1) % 2) * 6);
         }
@@ -1313,7 +1313,7 @@ void Renderer::setMenuText(const char* menuText, eTextPos textPos, uint16_t matr
     }
   }
   else if ( strlen(menuText) == 1 ) {
-    for (uint8_t i = 0; i < 5; i++) {
+    for (byte i = 0; i < 5; i++) {
       if (!isNumber(menuText[0])) {
         matrix[textPos + i] |= pgm_read_byte_near(&(staben[menuText[0] - 'A'][i])) << 8;
       }

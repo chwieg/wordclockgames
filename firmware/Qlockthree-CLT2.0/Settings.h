@@ -27,7 +27,7 @@
 
 class Settings {
   public:
-    enum eTransitions : uint8_t {
+    enum eTransitions : byte {
       TRANSITION_MODE_NORMAL,
       TRANSITION_MODE_FADE,
       TRANSITION_MODE_MATRIX,
@@ -38,11 +38,11 @@ class Settings {
 
     Settings();
 
-    uint8_t getLanguage();
-    void setLanguage(uint8_t language);
+    byte getLanguage();
+    void setLanguage(byte language);
 
-    uint8_t getEvent();
-    void setEvent(uint8_t event);
+    byte getEvent();
+    void setEvent(byte event);
 
     boolean getRenderCornersCw();
     void setRenderCornersCw(boolean cw);
@@ -50,8 +50,8 @@ class Settings {
     boolean getUseLdr();
     void setUseLdr(boolean useLdr);
 
-    uint8_t getBrightness();
-    void setBrightness(uint8_t brightness);
+    byte getBrightness();
+    void setBrightness(byte brightness);
 
     void setColor(eColors color);
     eColors getColor();
@@ -59,8 +59,8 @@ class Settings {
     boolean getEnableAlarm();
     void setEnableAlarm(boolean enableAlarm);
 
-    uint8_t getTransitionMode();
-    void setTransitionMode(uint8_t transitionMode);
+    byte getTransitionMode();
+    void setTransitionMode(byte transitionMode);
 
     boolean getDcfSignalIsInverted();
     void setDcfSignalIsInverted(boolean dcfSignalIsInverted);
@@ -68,11 +68,11 @@ class Settings {
     char getTimeShift();
     void setTimeShift(char timeShift);
 
-    uint8_t getJumpToNormalTimeout();
-    void setJumpToNormalTimeout(uint8_t jumpToNormalTimeout);
+    byte getJumpToNormalTimeout();
+    void setJumpToNormalTimeout(byte jumpToNormalTimeout);
 
-    uint8_t getColorChangeRate();
-    void setColorChangeRate(uint8_t rate);
+    byte getColorChangeRate();
+    void setColorChangeRate(byte rate);
 
     void loadFromEEPROM();
     void saveToEEPROM();
@@ -82,20 +82,20 @@ class Settings {
     TimeStamp* getNightModeTime(bool onTime);
 
   private:
-    uint8_t _language;
+    byte _language;
     boolean _renderCornersCw;
     boolean _use_ldr;
-    uint8_t _brightness;
+    byte _brightness;
     boolean _enableAlarm;
     boolean _dcfSignalIsInverted;
     char _timeShift;
     eColors _color;
-    uint8_t _transitionMode;
-    uint8_t _event;
+    byte _transitionMode;
+    byte _event;
     TimeStamp* _nightModeTime[2];
 
-    uint8_t _jumpToNormalTimeout;
-    uint8_t _colorChangeRate;
+    byte _jumpToNormalTimeout;
+    byte _colorChangeRate;
 };
 
 #endif

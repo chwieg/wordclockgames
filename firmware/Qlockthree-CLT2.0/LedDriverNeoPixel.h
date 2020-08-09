@@ -29,18 +29,18 @@
 
 class LedDriverNeoPixel : public LedDriver {
   public:
-    LedDriverNeoPixel(uint8_t dataPin);
+    LedDriverNeoPixel(byte dataPin);
 
     void init();
 
     void printSignature();
 
-    void writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color = color_none);
+    void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color = color_none);
 
-    void setBrightness(uint8_t brightnessInPercent);
-    uint8_t getBrightness();
+    void setBrightness(byte brightnessInPercent);
+    byte getBrightness();
 
-    void setLinesToWrite(uint8_t linesToWrite);
+    void setLinesToWrite(byte linesToWrite);
 
     void shutDown();
     void wakeUp();
@@ -48,16 +48,16 @@ class LedDriverNeoPixel : public LedDriver {
     void clearData();
 
   private:
-    uint8_t _brightnessInPercent;
+    byte _brightnessInPercent;
 
     boolean _dirty;
 
-    void _setPixel(uint8_t x, uint8_t y, uint32_t c);
-    void _setPixel(uint8_t num, uint32_t c);
+    void _setPixel(byte x, byte y, uint32_t c);
+    void _setPixel(byte num, uint32_t c);
 
-    uint32_t _wheel(uint8_t brightness, uint8_t wheelPos);
+    uint32_t _wheel(byte brightness, byte wheelPos);
 
-    uint8_t _brightnessScaleColor(uint8_t brightness, uint8_t colorPart);
+    byte _brightnessScaleColor(byte brightness, byte colorPart);
 
     Adafruit_NeoPixel *_strip;
 };

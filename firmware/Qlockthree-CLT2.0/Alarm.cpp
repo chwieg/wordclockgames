@@ -24,7 +24,7 @@
  *
  * @param speakerPin Der Pin, an dem der Lautsprecher oder Buzzer haengt.
  */
-Alarm::Alarm(uint8_t speakerPin) : TimeStamp(0, 7, 0, 0, 0, 0){
+Alarm::Alarm(byte speakerPin) : TimeStamp(0, 7, 0, 0, 0, 0){
   _speakerPin = speakerPin;
   pinMode(_speakerPin, OUTPUT);
   _isActive = false;
@@ -59,7 +59,7 @@ void Alarm::buzz(boolean on) {
  *
  * @return Die Zeit in Sekunden.
  */
-uint8_t Alarm::getShowAlarmTimeTimer() {
+byte Alarm::getShowAlarmTimeTimer() {
   return _showAlarmTimeTimer;
 }
 
@@ -69,7 +69,7 @@ uint8_t Alarm::getShowAlarmTimeTimer() {
  *
  * @param seconds Die Zeit in Sekunden.
  */
-void Alarm::setShowAlarmTimeTimer(uint8_t seconds) {
+void Alarm::setShowAlarmTimeTimer(byte seconds) {
   _showAlarmTimeTimer = seconds;
 }
 

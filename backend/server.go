@@ -94,7 +94,7 @@ func remoteCtrlHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:	// Serve the resource.
 		w.WriteHeader(http.StatusOK)
-		w.Write([]uint8_t("Nothing to GET here"))
+		w.Write([]byte("Nothing to GET here"))
 	case http.MethodPut:	// Update an existing record.
 		var d dataPutButton
 		err := json.NewDecoder(r.Body).Decode(&d)

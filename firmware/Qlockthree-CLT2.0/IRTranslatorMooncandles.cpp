@@ -45,7 +45,7 @@ void IRTranslatorMooncandles::printSignature() {
   DEBUG_PRINTLN(F("Mooncandles"));
 }
 
-uint8_t IRTranslatorMooncandles::buttonForCode(unsigned long code) {
+byte IRTranslatorMooncandles::buttonForCode(unsigned long code) {
   switch (code) {
     case MOONCANDLES_ON:
       return REMOTE_BUTTON_RESUME;

@@ -32,7 +32,7 @@ void IRTranslatorSparkfun::printSignature() {
   DEBUG_PRINTLN(F("Sparkfun COM-11759"));
 }
 
-uint8_t IRTranslatorSparkfun::buttonForCode(unsigned long code) {
+byte IRTranslatorSparkfun::buttonForCode(unsigned long code) {
   switch (code) {
     case SPARKFUN_POWER:
       return REMOTE_BUTTON_TOGGLEBLANK;

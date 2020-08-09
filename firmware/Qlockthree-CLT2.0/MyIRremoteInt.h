@@ -87,10 +87,10 @@
 
 // defines for setting and clearing register bits
 #ifndef cbi
-#define cbi(sfr, bit) (_SFR_uint8_t(sfr) &= ~_BV(bit))
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
 #ifndef sbi
-#define sbi(sfr, bit) (_SFR_uint8_t(sfr) |= _BV(bit))
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
 // Pulse parms are *50-100 for the Mark and *50+100 for the space

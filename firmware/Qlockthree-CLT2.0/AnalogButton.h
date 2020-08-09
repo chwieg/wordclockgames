@@ -20,12 +20,12 @@
 
 class AnalogButton {
   public:
-    AnalogButton(uint8_t pin, boolean inverse);
+    AnalogButton(byte pin, boolean inverse);
 
     boolean pressed();
 
   private:
-    uint8_t _pin;
+    byte _pin;
     boolean _inverse;
     unsigned long _lastPressTime;
 };

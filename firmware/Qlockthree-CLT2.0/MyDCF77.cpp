@@ -39,12 +39,12 @@
 // Höhe des Signalgraphen, wenn DEBUG_SIGNAL gesetzt (Default: 40.)
 #define DEBUG_SIGNAL_VIS_HEIGHT 40.
 
-uint8_t MyDCF77::DCF77Factors[] = {1, 2, 4, 8, 10, 20, 40, 80};
+byte MyDCF77::DCF77Factors[] = {1, 2, 4, 8, 10, 20, 40, 80};
 
 /**
  * Initialisierung mit dem Pin, an dem das Signal des Empfaengers anliegt
  */
-MyDCF77::MyDCF77(uint8_t signalPin, uint8_t statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0) {
+MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0) {
     _signalPin = signalPin;
 #ifndef MYDCF77_SIGNAL_IS_ANALOG
     pinMode(_signalPin, INPUT);
@@ -149,8 +149,8 @@ void MyDCF77::newCycle() {
             // Maximumsuche und Summenbildung
             unsigned int imax = 0;
             unsigned int isum = 0;
-            uint8_t pos = 0;
-            for (uint8_t i = 0; i < MYDCF77_SIGNAL_BINS; i++) {
+            byte pos = 0;
+            for (byte i = 0; i < MYDCF77_SIGNAL_BINS; i++) {
                if (_bins[i] > imax) {
                   imax = _bins[i];
                   pos = i;
@@ -218,13 +218,13 @@ void MyDCF77::newCycle() {
 
 void MyDCF77::OutputSignal(unsigned int average, unsigned int imax, unsigned int isum) {
     float t1 = imax / DEBUG_SIGNAL_VIS_HEIGHT;
-    for (uint8_t i = 0; i < MYDCF77_SIGNAL_BINS; i++ ) {
+    for (byte i = 0; i < MYDCF77_SIGNAL_BINS; i++ ) {
         if (i < 10) {
             DEBUG_PRINT(F("0"));
         }
         DEBUG_PRINT(i);
         DEBUG_PRINT(F(" "));
-        for (uint8_t j = 0; j < DEBUG_SIGNAL_VIS_HEIGHT; j++) {
+        for (byte j = 0; j < DEBUG_SIGNAL_VIS_HEIGHT; j++) {
             if ((_bins[i] / t1) > j) {
                 DEBUG_PRINT("-");
             }
@@ -237,7 +237,7 @@ void MyDCF77::OutputSignal(unsigned int average, unsigned int imax, unsigned int
     DEBUG_PRINT(average);
     DEBUG_PRINT(F(" Highcount: "));
     DEBUG_PRINTLN(isum);
-    for (uint8_t i = 0; i < MYDCF77_TELEGRAMMLAENGE; i++) {      
+    for (byte i = 0; i < MYDCF77_TELEGRAMMLAENGE; i++) {      
         DEBUG_PRINT(F(" "));
         DEBUG_PRINT(_bits[i]);
         if (i == _bitsPointer) {
@@ -253,7 +253,7 @@ void MyDCF77::OutputSignal(unsigned int average, unsigned int imax, unsigned int
 /**
  * Ein Bit im Array zum Debuggen (Anzeigen) bekommen.
  */
-uint8_t MyDCF77::getBitAtPos(uint8_t pos) {
+byte MyDCF77::getBitAtPos(byte pos) {
     return _bits[pos];
 }
 
@@ -275,7 +275,7 @@ void MyDCF77::setDcf77SuccessSync() {
 /**
  * Die passende Eckled zum Debuggen bekommen.
  */
-uint8_t MyDCF77::getDcf77ErrorCorner() {
+byte MyDCF77::getDcf77ErrorCorner() {
     return _errorCorner;
 }
 
@@ -327,7 +327,7 @@ boolean MyDCF77::decode() {
     //
     _minutes = 0;
     c = 0;
-    for (uint8_t i = 21; i <= 27; i++) {
+    for (byte i = 21; i <= 27; i++) {
       if (_bits[i]) {
         _minutes += _bits[i] * DCF77Factors[i-21];
         c++;
@@ -347,7 +347,7 @@ boolean MyDCF77::decode() {
     //
     _hours = 0;
     c = 0;
-    for (uint8_t i = 29; i <= 34; i++) {
+    for (byte i = 29; i <= 34; i++) {
       if (_bits[i]) {
         _hours += _bits[i] * DCF77Factors[i-29];
         c++;
@@ -367,7 +367,7 @@ boolean MyDCF77::decode() {
     //
     _date = 0;
     c = 0;
-    for (uint8_t i = 36; i <= 41; i++) {
+    for (byte i = 36; i <= 41; i++) {
       if (_bits[i]) {
         _date += _bits[i] * DCF77Factors[i-36];
         c++;
@@ -381,7 +381,7 @@ boolean MyDCF77::decode() {
     // day of week
     //
     _dayOfWeek = 0;
-    for (uint8_t i = 42; i <= 44; i++) {
+    for (byte i = 42; i <= 44; i++) {
       if (_bits[i]) {
         _dayOfWeek += _bits[i] * DCF77Factors[i-42];
         c++;
@@ -395,7 +395,7 @@ boolean MyDCF77::decode() {
     // month
     //
     _month = 0;
-    for (uint8_t i = 45; i <= 49; i++) {
+    for (byte i = 45; i <= 49; i++) {
       if (_bits[i]) {
         _month += _bits[i] * DCF77Factors[i-45];
         c++;
@@ -409,7 +409,7 @@ boolean MyDCF77::decode() {
     // year
     //
     _year = 0;
-    for (uint8_t i = 50; i <= 57; i++) {
+    for (byte i = 50; i <= 57; i++) {
       if (_bits[i]) {
         _year += _bits[i] * DCF77Factors[i-50];
         c++;
@@ -458,7 +458,7 @@ boolean MyDCF77::decode() {
  * Das Bits-Array loeschen.
  */
 void MyDCF77::clearBits() {
-    for (uint8_t i = 0; i < MYDCF77_TELEGRAMMLAENGE; i++) {
+    for (byte i = 0; i < MYDCF77_TELEGRAMMLAENGE; i++) {
         _bits[i] = 0;
     }
     _bitsPointer = 0;
@@ -468,7 +468,7 @@ void MyDCF77::clearBits() {
  * Das Bins-Array loeschen.
  */
 void MyDCF77::clearBins() {
-    for (uint8_t i = 0; i < MYDCF77_SIGNAL_BINS; i++) {
+    for (byte i = 0; i < MYDCF77_SIGNAL_BINS; i++) {
         _bins[i] = 0;
     }   
 }

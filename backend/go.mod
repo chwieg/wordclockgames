@@ -1,4 +1,4 @@
-module github.com/chwieg/uint16_tclockgames
+module github.com/chwieg/wordclockgames
 
 go 1.14
 

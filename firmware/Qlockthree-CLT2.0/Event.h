@@ -29,19 +29,19 @@ extern Settings settings;
 
 class Event {
   public:
-    Event(uint8_t month,
-          uint8_t date,
+    Event(byte month,
+          byte date,
           const char* txt,
           Effects::eEffects effect,
           eColors color);
 
     void show();
-    uint8_t getMonth();
-    uint8_t getDate();
+    byte getMonth();
+    byte getDate();
 
   private:
-    uint8_t _month;
-    uint8_t _date;
+    byte _month;
+    byte _date;
     const char* _txt;
     Effects::eEffects _effect;
     eColors _color;

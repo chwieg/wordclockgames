@@ -35,7 +35,7 @@
 
    @param data Pin, an dem die Data-Line haengt.
 */
-LedDriverLPD8806::LedDriverLPD8806(uint8_t dataPin, uint8_t clockPin) {
+LedDriverLPD8806::LedDriverLPD8806(byte dataPin, byte clockPin) {
 #ifdef MATRIX_XXL
   #ifdef RGBW_LEDS
     _strip = new LPD8806RGBW_DBL(NUM_PIXEL, dataPin, clockPin);
@@ -81,9 +81,9 @@ void LedDriverLPD8806::printSignature() {
    @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
                     FALSE, wenn es ein Refresh-Aufruf war.
 */
-void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color) {
+void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
-  uint8_t wheelPosIncrement = 0;
+  byte wheelPosIncrement = 0;
   
   if ((a_color == color_rgb_continuous) && _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > ((1 + (10-settings.getColorChangeRate())) * 100)) {
@@ -115,8 +115,8 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
     uint32_t colorOld = 0;
     uint32_t colorOverlay1 = 0;
     uint32_t colorOverlay2 = 0;
-    uint8_t brightnessOld = 0;
-    uint8_t brightnessNew = 0;
+    byte brightnessOld = 0;
+    byte brightnessNew = 0;
 
     _dirty = false;
 
@@ -133,7 +133,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
       if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
         switch (settings.getTransitionMode()) {
           case Settings::TRANSITION_MODE_FADE:
-            for (uint8_t i = 0; i < 11; i++) {
+            for (byte i = 0; i < 11; i++) {
               _matrixOld[i] = _matrixNew[i];
               if (_demoTransition) {
                 _matrixNew[i] = 0;
@@ -150,7 +150,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
           case Settings::TRANSITION_MODE_SLIDE:
             if (((rtc.getMinutes() % 5) == 0) || _demoTransition) {
               Transitions::resetTransition();
-              for (uint8_t i = 0; i < 11; i++) {
+              for (byte i = 0; i < 11; i++) {
                 _matrixOld[i] = 0;
                 _matrixOverlay[i] = 0;
               }
@@ -159,7 +159,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
             break;
           case Settings::TRANSITION_MODE_NORMAL:
             if (_demoTransition) {
-              for (uint8_t i = 0; i < 11; i++) {
+              for (byte i = 0; i < 11; i++) {
                 _matrixNew[i] = 0;
               }
               _transitionCompleted = false;
@@ -173,7 +173,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
     }
 
     if (_transitionCompleted) {
-      for (uint8_t i = 0; i < 11; i++) {
+      for (byte i = 0; i < 11; i++) {
         _matrixOld[i] = 0;
         _matrixNew[i] = matrix[i];
         _matrixOverlay[i] = 0;
@@ -244,9 +244,9 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
     _clear();
     _lastLEDsOn = 0;
     
-    for (uint8_t y = 0; y < 10; y++) {
-      for (uint8_t x = 5; x < 16; x++) {
-        uint16_t t = 1 << x;
+    for (byte y = 0; y < 10; y++) {
+      for (byte x = 5; x < 16; x++) {
+        word t = 1 << x;
         if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t) ) {
           _setPixel(15 - x, y, color);
         }
@@ -272,8 +272,8 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
     }
 
     // wir muessen die Eck-LEDs und die Alarm-LED umsetzen...
-    uint8_t cornerLedCount[] = {1, 0, 3, 2, 4};
-    for ( uint8_t i = 0; i < 5; i++) {
+    byte cornerLedCount[] = {1, 0, 3, 2, 4};
+    for ( byte i = 0; i < 5; i++) {
       if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
         _setPixel(110 + i, color);
       }
@@ -290,65 +290,12 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(uint16_t matrix[16], boolean on
   }
 }
 
-
-/**
- * LED-Matrix auf den mittleren 42 Feldern und in den Ecken beschreiben.
- * für 4 gewinnt Modus
- * 
- * numColors: Anzahl der verschiedenen Darzustellenden Farben
- * colorDef:  Array von uint32_t Farbdefinition
- * board:     array der 42 Spielfelder. Wert entspricht Index von colorDef+1
- *            Bsp. für Werte:
- *            0: hier für LED aus; 1: colorDef[0], usw.
- * corners:   Array für die vier Ecken. Wert entspricht Index von colorDef+1 (d.h. wie board)
- */
-void LedDriverLPD8806::writeBoardToMatrix(uint8_t colorDef[NUM_COLORS][3], uint8_t board[N_ROWS][N_COLS], uint8_t corners) {
-
-  uint8_t x=0;
-  uint8_t y=0;
-  uint32_t colorBoundary = _strip->Color(0x7F, 0x7F, 0x7F); // Farbe für Rand des Spielfelds
-  uint8_t ixColor = 0;  // Index für Farbe aus colorDef
-
-  _clear();
-    
-  // Rand darstellen
-  for (y = 2; y < 2+6; y++) {
-    _setPixel(1, y, colorBoundary);
-    _setPixel(9, y, colorBoundary);
-  }
-  for (x = 1; x <= 9; x++) {
-    _setPixel(x, 8, colorBoundary);
-  }
-
-  // Spielfeld darstellen
-  for ( uint8_t row = 0; row < N_ROWS; row++) {
-    for ( uint8_t col = 0; col < N_COLS; col++) {
-      if (board[row][col]) {
-        ixColor = board[row][col] - 1;
-        x = col+2;
-        y = row+2;  
-        _setPixel(x, y, _strip->Color(colorDef[ixColor][0], colorDef[ixColor][2], colorDef[ixColor][1]) );
-      }
-    }
-  }
-
-  // 4 Ecken ansteuern
-  if (corners) {
-    ixColor = corners - 1;
-    for ( uint8_t i = 0; i < 5; i++) {
-      _setPixel(110 + i, _strip->Color(colorDef[ixColor][0], colorDef[ixColor][2], colorDef[ixColor][1]) );
-    }
-  }
-
-  _strip->show();
-}
-
 /**
    Die Helligkeit des Displays anpassen.
 
    @param brightnessInPercent Die Helligkeit.
 */
-void LedDriverLPD8806::setBrightness(uint8_t brightnessInPercent) {
+void LedDriverLPD8806::setBrightness(byte brightnessInPercent) {
   if ((brightnessInPercent != _brightnessInPercent) && _transitionCompleted) {
     _brightnessInPercent = brightnessInPercent;
     _dirty = true;
@@ -358,7 +305,7 @@ void LedDriverLPD8806::setBrightness(uint8_t brightnessInPercent) {
 /**
    Die aktuelle Helligkeit bekommen.
 */
-uint8_t LedDriverLPD8806::getBrightness() {
+byte LedDriverLPD8806::getBrightness() {
   return _brightnessInPercent;
 }
 
@@ -368,7 +315,7 @@ uint8_t LedDriverLPD8806::getBrightness() {
    @param linesToWrite Wieviel Zeilen aus dem Bildspeicher sollen
                        geschrieben werden?
 */
-void LedDriverLPD8806::setLinesToWrite(uint8_t linesToWrite) {
+void LedDriverLPD8806::setLinesToWrite(byte linesToWrite) {
 }
 
 /**
@@ -397,7 +344,7 @@ void LedDriverLPD8806::clearData() {
 /**
    Einen X/Y-koordinierten Pixel in der Matrix setzen.
 */
-void LedDriverLPD8806::_setPixel(uint8_t x, uint8_t y, uint32_t c) {
+void LedDriverLPD8806::_setPixel(byte x, byte y, uint32_t c) {
 #ifdef RGBW_LEDS
   _setPixel(y + (x * 10), c);
 #else
@@ -408,7 +355,7 @@ void LedDriverLPD8806::_setPixel(uint8_t x, uint8_t y, uint32_t c) {
 /**
    Einen Pixel im Streifen setzten (die Eck-LEDs sind am Ende).
 */
-void LedDriverLPD8806::_setPixel(uint8_t num, uint32_t c) {
+void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
 #if defined(MATRIX_XXL) //|| defined(RGBW_LEDS)
   if (num < 110) {
     if ((num / 11) % 2 == 0) {
@@ -438,7 +385,7 @@ void LedDriverLPD8806::_setPixel(uint8_t num, uint32_t c) {
     }
   }
 #elif defined(RGBW_LEDS)
-  uint8_t ledNum;
+  byte ledNum;
   if (num < 110) {
     if ((num / 10) % 2 == 0) {
       ledNum = num;
@@ -514,7 +461,7 @@ void LedDriverLPD8806::_setPixel(uint8_t num, uint32_t c) {
    Funktion fuer saubere 'Regenbogen'-Farben.
    Kopiert aus den Adafruit-Beispielen (strand).
 */
-uint32_t LedDriverLPD8806::_wheel(uint8_t brightness, uint8_t wheelPos) {
+uint32_t LedDriverLPD8806::_wheel(byte brightness, byte wheelPos) {
   if (wheelPos < 85) {
     return _strip->Color(_brightnessScaleColor(brightness, wheelPos * 3), _brightnessScaleColor(brightness, 255 - wheelPos * 3), _brightnessScaleColor(brightness, 0));
   } else if (wheelPos < 170) {
@@ -529,7 +476,7 @@ uint32_t LedDriverLPD8806::_wheel(uint8_t brightness, uint8_t wheelPos) {
 /**
    Hilfsfunktion fuer das Skalieren der Farben.
 */
-uint8_t LedDriverLPD8806::_brightnessScaleColor(uint8_t brightness, uint8_t colorPart) {
+byte LedDriverLPD8806::_brightnessScaleColor(byte brightness, byte colorPart) {
   return map(brightness, 0, 100, 0, colorPart / 2); // LPD8806 kann nur 7 bit Farben! (also 0..127, nicht 0..255)
 }
 
@@ -537,7 +484,7 @@ uint8_t LedDriverLPD8806::_brightnessScaleColor(uint8_t brightness, uint8_t colo
    Streifen loeschen.
 */
 void LedDriverLPD8806::_clear() {
-  for (uint8_t i = 0; i < NUM_PIXEL; i++) {
+  for (byte i = 0; i < NUM_PIXEL; i++) {
     _strip->setPixelColor(i, 0);
   }
 }

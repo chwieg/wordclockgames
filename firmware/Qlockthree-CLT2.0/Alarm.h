@@ -20,22 +20,22 @@
 
 class Alarm : public TimeStamp {
   public:
-    Alarm(uint8_t speakerPin);
+    Alarm(byte speakerPin);
 
     void activate();
     void deactivate();
     void buzz(boolean on);
 
-    uint8_t getShowAlarmTimeTimer();
-    void setShowAlarmTimeTimer(uint8_t seconds);
+    byte getShowAlarmTimeTimer();
+    void setShowAlarmTimeTimer(byte seconds);
     void decShowAlarmTimeTimer();
 
     boolean isActive();
 
   private:
     boolean _isActive;
-    uint8_t _showAlarmTimeTimer;
-    uint8_t _speakerPin;
+    byte _showAlarmTimeTimer;
+    byte _speakerPin;
 };
 
 #endif

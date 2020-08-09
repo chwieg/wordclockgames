@@ -21,7 +21,7 @@
 class IRTranslatorMooncandles : public IRTranslator {
   public:
     void printSignature();
-    uint8_t buttonForCode(unsigned long code);
+    byte buttonForCode(unsigned long code);
 };
 
 #endif

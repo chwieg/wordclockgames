@@ -16,8 +16,8 @@
 // #define DEBUG
 #include "Debug.h"
 
-Event::Event(uint8_t month,
-             uint8_t date,
+Event::Event(byte month,
+             byte date,
              const char* txt,
              Effects::eEffects effect,
              eColors color) :
@@ -58,10 +58,10 @@ void Event::show() {
   }
 }
 
-uint8_t Event::getMonth() {
+byte Event::getMonth() {
   return _month;
 }
 
-uint8_t Event::getDate() {
+byte Event::getDate() {
   return _date;
 }

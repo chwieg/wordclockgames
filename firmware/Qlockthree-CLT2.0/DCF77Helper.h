@@ -37,7 +37,7 @@ public:
     boolean samplesOk();
 
 private:
-    uint8_t _cursor;
+    byte _cursor;
     TimeStamp *_zeitstempelDcf77[DCF77HELPER_MAX_SAMPLES];
     TimeStamp *_zeitstempelRtc[DCF77HELPER_MAX_SAMPLES];
 };

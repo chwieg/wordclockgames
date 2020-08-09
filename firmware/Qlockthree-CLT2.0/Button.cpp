@@ -30,7 +30,7 @@
  * @param  pin: der Pin, an dem der Taster haengt
  *         pressedAgainst: wogegen schaltet der Taster? (HIGH/LOW)
  */
-Button::Button(uint8_t pin, uint8_t pressedAgainst) {
+Button::Button(byte pin, byte pressedAgainst) {
   _pin1 = pin;
   _lastPressTime = 0;
   _doubleMode = false;
@@ -48,7 +48,7 @@ Button::Button(uint8_t pin, uint8_t pressedAgainst) {
  * @param  pin1, pin2: die Pins, an dem der virtuelle Taster haengt
  *         pressedAgainst: wogegen schalten die Taster? (HIGH/LOW)
  */
-Button::Button(uint8_t pin1, uint8_t pin2, uint8_t pressedAgainst) {
+Button::Button(byte pin1, byte pin2, byte pressedAgainst) {
   _pin1 = pin1;
   _pin2 = pin2;
   _lastPressTime = 0;

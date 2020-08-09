@@ -50,18 +50,18 @@
 class IRTranslator {
   public:
     virtual void printSignature();
-    virtual uint8_t buttonForCode(unsigned long code);
+    virtual byte buttonForCode(unsigned long code);
     eColors getColor();
     Mode getMode();
-    uint8_t getTransition();
+    byte getTransition();
 
   protected:
     void setColor(eColors);
     void setMode(Mode mode);
-    void setTransition(uint8_t transition);
+    void setTransition(byte transition);
 
   private:
-    uint8_t _transition;
+    byte _transition;
     eColors _color;
     Mode _mode;
 };

@@ -25,18 +25,18 @@
 
 class MyTempSens {
 public:
-  MyTempSens(uint8_t pin);
+  MyTempSens(byte pin);
   void takeSample();
-  uint8_t getTempC();
+  byte getTempC();
   int getTempK();
   void initLM35();
   void initLM335();
 private:
-  uint8_t _pin;
+  byte _pin;
   int _tempSamplesSum;
   int _tempSamples[NR_OF_SAMPLES];
-  uint8_t _idx;
-  uint8_t _slope;
+  byte _idx;
+  byte _slope;
   int _offsetC;
 };
 

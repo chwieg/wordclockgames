@@ -22,7 +22,7 @@ Mode IRTranslator::getMode() {
   return _mode;
 }
 
-uint8_t IRTranslator::getTransition() {
+byte IRTranslator::getTransition() {
   return _transition;
 }
 
@@ -34,6 +34,6 @@ void IRTranslator::setMode(Mode mode) {
   _mode = mode;
 }
 
-void IRTranslator::setTransition(uint8_t transition) {
+void IRTranslator::setTransition(byte transition) {
   _transition = transition;
 }

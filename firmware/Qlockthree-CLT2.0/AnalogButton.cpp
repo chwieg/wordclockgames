@@ -26,7 +26,7 @@
  * @param  pin: der Pin, an dem der Taster haengt
  *         inverse: Schaltverhalten umdrehen? (HIGH/LOW)
  */
-AnalogButton::AnalogButton(uint8_t pin, boolean inverse) {
+AnalogButton::AnalogButton(byte pin, boolean inverse) {
   _pin = pin;
   _lastPressTime = 0;
   _inverse = inverse;

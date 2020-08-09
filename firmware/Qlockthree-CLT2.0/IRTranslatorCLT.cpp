@@ -52,7 +52,7 @@ void IRTranslatorCLT::printSignature() {
   DEBUG_PRINTLN(F("CLT leuchtbildshop"));
 }
 
-uint8_t IRTranslatorCLT::buttonForCode(unsigned long code) {
+byte IRTranslatorCLT::buttonForCode(unsigned long code) {
   switch (code) {
 
     case CLT_TIME:

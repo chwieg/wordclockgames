@@ -19,7 +19,7 @@
 /**
    Die Standard-Modi.
 */
-typedef enum eMode : uint8_t
+typedef enum eMode : byte
 {
   STD_MODE_NORMAL,
 #ifdef ALARM
@@ -90,7 +90,7 @@ typedef enum eMode : uint8_t
 // Overload the ControlType++ operator
 inline Mode& operator++(Mode& eDOW, int)  // <--- note -- must be a reference
 {
-  const uint8_t i = static_cast<uint8_t>(eDOW) + 1;
+  const byte i = static_cast<byte>(eDOW) + 1;
   eDOW = static_cast<Mode>((i) % EXT_MODE_COUNT);
   return eDOW;
 }

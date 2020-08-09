@@ -23,7 +23,7 @@
 #include "Arduino.h"
 #include "Configuration.h"
 
-enum eLanguage : uint8_t{
+enum eLanguage : byte{
 #ifdef ENABLE_LANGUAGE_CH
   LANGUAGE_CH,
   LANGUAGE_CH_X,
@@ -54,7 +54,7 @@ enum eLanguage : uint8_t{
 
 class Renderer {
   public:
-    enum eTextPos : uint8_t {
+    enum eTextPos : byte {
       TEXT_POS_TOP,
       TEXT_POS_MIDDLE = 2,
       TEXT_POS_BOTTOM = 5
@@ -62,30 +62,30 @@ class Renderer {
   public:
     Renderer();
 
-    void setMinutes(char hours, uint8_t minutes, uint8_t language, uint16_t matrix[16]);
-    void setCorners(uint8_t minutes, boolean cw, uint16_t matrix[16]);
-    void activateAlarmLed(uint16_t matrix[16]);
+    void setMinutes(char hours, byte minutes, byte language, word matrix[16]);
+    void setCorners(byte minutes, boolean cw, word matrix[16]);
+    void activateAlarmLed(word matrix[16]);
 
-    void cleanuint16_tsForAlarmSettingMode(uint8_t language, uint16_t matrix[16]);
+    void cleanWordsForAlarmSettingMode(byte language, word matrix[16]);
 
-    void scrambleScreenBuffer(uint16_t matrix[16]);
-    void clearScreenBuffer(uint16_t matrix[16]);
-    void setAllScreenBuffer(uint16_t matrix[16]);
-    void setMenuText(const char* menuText, eTextPos textPos, uint16_t matrix[16]);
+    void scrambleScreenBuffer(word matrix[16]);
+    void clearScreenBuffer(word matrix[16]);
+    void setAllScreenBuffer(word matrix[16]);
+    void setMenuText(const char* menuText, eTextPos textPos, word matrix[16]);
 
   private:
-    void setHours(uint8_t hours, boolean glatt, uint8_t language, uint16_t matrix[16]);
+    void setHours(byte hours, boolean glatt, byte language, word matrix[16]);
     boolean isNumber(char symbol);
 
 // Spezialfaelle
 #ifdef ENABLE_LANGUAGE_FR
-    void FR_hours(uint8_t hours, uint16_t matrix[16]);
+    void FR_hours(byte hours, word matrix[16]);
 #endif
 #ifdef ENABLE_LANGUAGE_IT
-    void IT_hours(uint8_t hours, uint16_t matrix[16]);
+    void IT_hours(byte hours, word matrix[16]);
 #endif
 #ifdef ENABLE_LANGUAGE_ES
-    void ES_hours(uint8_t hours, uint16_t matrix[16]);
+    void ES_hours(byte hours, word matrix[16]);
 #endif
 };
 

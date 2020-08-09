@@ -65,19 +65,19 @@ void Settings::resetToDefault() {
 /**
  * Die Sprache. Werte siehe Renderer.h
  */
-uint8_t Settings::getLanguage() {
+byte Settings::getLanguage() {
   return _language;
 }
 
-void Settings::setLanguage(uint8_t language) {
+void Settings::setLanguage(byte language) {
   _language = language;
 }
 
-uint8_t Settings::getEvent() {
+byte Settings::getEvent() {
   return _event;
 }
 
-void Settings::setEvent(uint8_t event) {
+void Settings::setEvent(byte event) {
   _event = event;
 }
 
@@ -106,11 +106,11 @@ void Settings::setUseLdr(boolean useLdr) {
 /**
  * Die Helligkeit.
  */
-uint8_t Settings::getBrightness() {
+byte Settings::getBrightness() {
   return _brightness;
 }
 
-void Settings::setBrightness(uint8_t brightness) {
+void Settings::setBrightness(byte brightness) {
   _brightness = brightness;
 }
 
@@ -158,11 +158,11 @@ char Settings::getTimeShift() {
 /**
  * Automatische Umschaltung zurück auf Uhrzeit
  */
-uint8_t Settings::getJumpToNormalTimeout() {
+byte Settings::getJumpToNormalTimeout() {
     return _jumpToNormalTimeout;
 }
 
-void Settings::setJumpToNormalTimeout(uint8_t jumpToNormalTimeout) {
+void Settings::setJumpToNormalTimeout(byte jumpToNormalTimeout) {
     _jumpToNormalTimeout = jumpToNormalTimeout;
 }
 
@@ -170,10 +170,10 @@ void Settings::setTimeShift(char timeShift) {
   _timeShift = timeShift;
 }
 
-uint8_t Settings::getTransitionMode() {
+byte Settings::getTransitionMode() {
   return _transitionMode;
 }
-void Settings::setTransitionMode(uint8_t transitionMode) {
+void Settings::setTransitionMode(byte transitionMode) {
   _transitionMode = transitionMode;
 }
 
@@ -181,11 +181,11 @@ TimeStamp* Settings::getNightModeTime(bool onTime) {
   return _nightModeTime[onTime];
 }
 
-void Settings::setColorChangeRate(uint8_t rate) {
+void Settings::setColorChangeRate(byte rate) {
   _colorChangeRate = rate;
 }
 
-uint8_t Settings::getColorChangeRate() {
+byte Settings::getColorChangeRate() {
   return _colorChangeRate;
 }
 

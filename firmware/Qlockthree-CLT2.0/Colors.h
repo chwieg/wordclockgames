@@ -16,9 +16,9 @@
 #define COLORS_H
 
 typedef struct color_s {
-  uint8_t red;
-  uint8_t green;
-  uint8_t blue;
+  byte red;
+  byte green;
+  byte blue;
 }color_t;
 
 const color_t defaultColors[] PROGMEM = { 
@@ -43,7 +43,7 @@ const color_t defaultColors[] PROGMEM = {
   {255, 0, 255},
   };
 
-enum eColors : uint8_t{
+enum eColors : byte{
   color_white,
   color_red,
   color_green,

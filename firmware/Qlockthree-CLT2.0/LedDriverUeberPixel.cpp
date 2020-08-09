@@ -28,7 +28,7 @@
  * @param clock Pin, an dem die Clock-Line haengt.
  * @param latch Pin, an dem die Latch-Line haengt.
  */
-LedDriverUeberPixel::LedDriverUeberPixel(uint8_t data, uint8_t clock, uint8_t load) {
+LedDriverUeberPixel::LedDriverUeberPixel(byte data, byte clock, byte load) {
   _ledControl = new LedControl(data, clock, load, 4);
 }
 
@@ -60,11 +60,11 @@ void LedDriverUeberPixel::printSignature() {
  * @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
-void LedDriverUeberPixel::writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color) {
+void LedDriverUeberPixel::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   if (onChange) {
-    for (uint8_t y = 0; y < 10; y++) {
-      for (uint8_t x = 5; x < 16; x++) {
-        uint16_t t = 1 << x;
+    for (byte y = 0; y < 10; y++) {
+      for (byte x = 5; x < 16; x++) {
+        word t = 1 << x;
         if ((matrix[y] & t) == t) {
           _setPixel(15 - x, y, true);
         } else {
@@ -101,7 +101,7 @@ void LedDriverUeberPixel::writeScreenBufferToMatrix(uint16_t matrix[16], boolean
  *
  * @param brightnessInPercent Die Helligkeit.
  */
-void LedDriverUeberPixel::setBrightness(uint8_t brightnessInPercent) {
+void LedDriverUeberPixel::setBrightness(byte brightnessInPercent) {
   if (_brightnessInPercent != brightnessInPercent) {
     _brightnessInPercent = brightnessInPercent;
 
@@ -109,11 +109,11 @@ void LedDriverUeberPixel::setBrightness(uint8_t brightnessInPercent) {
     DEBUG_PRINTLN(_brightnessInPercent);
     DEBUG_FLUSH();
 
-    uint8_t val = map(_brightnessInPercent, 0, 100, 1, 15);
+    byte val = map(_brightnessInPercent, 0, 100, 1, 15);
     DEBUG_PRINT(F(" val: "));
     DEBUG_PRINTLN(val);
     DEBUG_FLUSH();
-    for (uint8_t i = 0; i < 4; i++) {
+    for (byte i = 0; i < 4; i++) {
       _ledControl->setIntensity(i, val);
     }
   }
@@ -122,7 +122,7 @@ void LedDriverUeberPixel::setBrightness(uint8_t brightnessInPercent) {
 /**
  * Die aktuelle Helligkeit bekommen.
  */
-uint8_t LedDriverUeberPixel::getBrightness() {
+byte LedDriverUeberPixel::getBrightness() {
   return _brightnessInPercent;
 }
 
@@ -132,14 +132,14 @@ uint8_t LedDriverUeberPixel::getBrightness() {
  * @param linesToWrite Wieviel Zeilen aus dem Bildspeicher sollen
  *                     geschrieben werden?
  */
-void LedDriverUeberPixel::setLinesToWrite(uint8_t linesToWrite) {
+void LedDriverUeberPixel::setLinesToWrite(byte linesToWrite) {
 }
 
 /**
  * Das Display ausschalten.
  */
 void LedDriverUeberPixel::shutDown() {
-  for (uint8_t i = 0; i < 4; i++) {
+  for (byte i = 0; i < 4; i++) {
     _ledControl->shutdown(i, true);
   }
 }
@@ -148,7 +148,7 @@ void LedDriverUeberPixel::shutDown() {
  * Das Display einschalten.
  */
 void LedDriverUeberPixel::wakeUp() {
-  for (uint8_t i = 0; i < 4; i++) {
+  for (byte i = 0; i < 4; i++) {
     _ledControl->shutdown(i, false);
   }
 }
@@ -157,7 +157,7 @@ void LedDriverUeberPixel::wakeUp() {
  * Den Dateninhalt des LED-Treibers loeschen.
  */
 void LedDriverUeberPixel::clearData() {
-  for (uint8_t i = 0; i < 4; i++) {
+  for (byte i = 0; i < 4; i++) {
     _ledControl->clearDisplay(i);
   }
 }
@@ -165,7 +165,7 @@ void LedDriverUeberPixel::clearData() {
 /**
  * Einen X/Y-koordinierten Pixel in der Matrix setzen.
  */
-void LedDriverUeberPixel::_setPixel(uint8_t x, uint8_t y, boolean state) {
+void LedDriverUeberPixel::_setPixel(byte x, byte y, boolean state) {
   // 1. MAX7219
   if ((x < 6) && (y < 5)) {
     _ledControl->setLed(0, x, y, state);

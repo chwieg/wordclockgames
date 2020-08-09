@@ -13,9 +13,9 @@
 
 #include "Transitions.h"
 
-uint8_t Transitions::_counter;
-uint16_t Transitions::_usedColumns;
-uint8_t Transitions::_remainingCoulumnCount;
+byte Transitions::_counter;
+word Transitions::_usedColumns;
+byte Transitions::_remainingCoulumnCount;
 boolean Transitions::_ereasingDone;
 boolean Transitions::_writingDone;
 
@@ -27,34 +27,34 @@ void Transitions::resetTransition () {
   _writingDone = false;
 }
 
-boolean Transitions::nextSlideStep (uint16_t matrixNew[16], uint16_t matrix[16]) {
+boolean Transitions::nextSlideStep (word matrixNew[16], word matrix[16]) {
   _counter++;
   if (_counter < 22) {
-    for (uint8_t i = 0; i < min( _counter, 12); i++) {
+    for (byte i = 0; i < min( _counter, 12); i++) {
       shiftColumnDown(matrixNew, i);
     }
   }
   else {
-    for (uint8_t i = max(_counter - 22 - 9, 0); i < min( _counter - 21, 12); i++) {
+    for (byte i = max(_counter - 22 - 9, 0); i < min( _counter - 21, 12); i++) {
       shiftColumnUp(matrixNew, matrix, i);
     }
   }
   return (_counter > 41);
 }
 
-void Transitions::shiftColumnDown (uint16_t matrix[16], uint8_t column) {
-  uint16_t tempMatrix = (0x01 << (15 - column));
-  for (uint8_t i = 10; i > 0; i--) {
+void Transitions::shiftColumnDown (word matrix[16], byte column) {
+  word tempMatrix = (0x01 << (15 - column));
+  for (byte i = 10; i > 0; i--) {
     matrix[i] &= ~tempMatrix;
     matrix[i] |= (matrix[i - 1] & tempMatrix);
   }
   matrix[0] &= ~tempMatrix;
 }
 
-void Transitions::shiftColumnUp (uint16_t matrixNew[16], uint16_t matrix[16], uint8_t column) {
-  uint16_t tempMatrix = (0x01 << (15 - column));
-  uint8_t tempIdx;
-  for (uint8_t i = 0; i < 10; i++) {
+void Transitions::shiftColumnUp (word matrixNew[16], word matrix[16], byte column) {
+  word tempMatrix = (0x01 << (15 - column));
+  byte tempIdx;
+  for (byte i = 0; i < 10; i++) {
     matrixNew[i] &= ~tempMatrix;
     tempIdx = i - (9 + column - (_counter - 22));
     if (tempIdx < 12) {
@@ -64,9 +64,9 @@ void Transitions::shiftColumnUp (uint16_t matrixNew[16], uint16_t matrix[16], ui
   matrix[10] &= ~tempMatrix;
 }
 
-boolean Transitions::nextMatrixStep(uint16_t matrixWeak[16], uint16_t matrixTime[16], uint16_t matrixMatrix[16], uint16_t matrix[16]) {
-  uint8_t loopCount = random(0, 5);
-  uint8_t column;
+boolean Transitions::nextMatrixStep(word matrixWeak[16], word matrixTime[16], word matrixMatrix[16], word matrix[16]) {
+  byte loopCount = random(0, 5);
+  byte column;
 
   if (!_ereasingDone) {
     shiftDownMatrixErease(matrixMatrix, matrixWeak);
@@ -80,7 +80,7 @@ boolean Transitions::nextMatrixStep(uint16_t matrixWeak[16], uint16_t matrixTime
       }
       else
       {
-        for ( uint8_t i = 0; i < loopCount; i++) {
+        for ( byte i = 0; i < loopCount; i++) {
           column = random(4, 16);
           if (!(_usedColumns & (0x01 << column))) {
             _usedColumns |= (0x01 << column);
@@ -103,7 +103,7 @@ boolean Transitions::nextMatrixStep(uint16_t matrixWeak[16], uint16_t matrixTime
       }
       else
       {
-        for ( uint8_t i = 0; i < loopCount; i++) {
+        for ( byte i = 0; i < loopCount; i++) {
           column = random(4, 16);
           if (!(_usedColumns & (0x01 << column))) {
             _usedColumns |= (0x01 << column);
@@ -119,7 +119,7 @@ boolean Transitions::nextMatrixStep(uint16_t matrixWeak[16], uint16_t matrixTime
     _counter++;
     if (_counter > 11) {
       if (!_ereasingDone) {
-        for (uint8_t i = 0; i < 11; i++) {
+        for (byte i = 0; i < 11; i++) {
           matrixTime[i] = matrix[i];
         }
         _usedColumns = 0;
@@ -136,8 +136,8 @@ boolean Transitions::nextMatrixStep(uint16_t matrixWeak[16], uint16_t matrixTime
   return (_writingDone);
 }
 
-void Transitions::shiftDownMatrixErease(uint16_t matrixMatrix[16], uint16_t matrixWeak[16]) {
-  for (uint8_t i = 10; i > 0; i--) {
+void Transitions::shiftDownMatrixErease(word matrixMatrix[16], word matrixWeak[16]) {
+  for (byte i = 10; i > 0; i--) {
     matrixMatrix[i] = matrixMatrix[i - 1];
     matrixWeak[i] |= matrixWeak[i - 1];
   }
@@ -145,8 +145,8 @@ void Transitions::shiftDownMatrixErease(uint16_t matrixMatrix[16], uint16_t matr
   matrixMatrix[0] = 0;
 }
 
-void Transitions::shiftDownMatrixWrite(uint16_t matrixMatrix[16], uint16_t matrixWeak[16]) {
-  for (uint8_t i = 10; i > 0; i--) {
+void Transitions::shiftDownMatrixWrite(word matrixMatrix[16], word matrixWeak[16]) {
+  for (byte i = 10; i > 0; i--) {
     matrixMatrix[i] = matrixMatrix[i - 1];
     matrixWeak[i] = matrixWeak[i - 1];
   }
