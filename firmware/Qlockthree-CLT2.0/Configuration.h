@@ -80,9 +80,9 @@
  * - SPEAKER_IS_BUZZER: wenn einkommentiert wird davon ausgegangen, dass am Pin SPEAKER ein Buzzer haengt (Reichelt: SUMMER TDB 05).
  */
 // #define ALARM
-// #define SPEAKER_FREQUENCY 200000
-// #define MAX_BUZZ_TIME_IN_MINUTES 10
-// #define SPEAKER_IS_BUZZER
+#define SPEAKER_FREQUENCY 200000
+#define MAX_BUZZ_TIME_IN_MINUTES 10
+#define SPEAKER_IS_BUZZER
 
 /*
  * Die Status-LEDs koennen hier durch auskommentieren ausgeschaltet werden.
