@@ -42,12 +42,12 @@
 
 // Im Menu auswählbare Sprachen aktivieren.
 #define ENABLE_LANGUAGE_DE
-#define ENABLE_LANGUAGE_CH
-#define ENABLE_LANGUAGE_EN
-#define ENABLE_LANGUAGE_FR
-#define ENABLE_LANGUAGE_IT
-#define ENABLE_LANGUAGE_NL
-#define ENABLE_LANGUAGE_ES
+// #define ENABLE_LANGUAGE_CH
+// #define ENABLE_LANGUAGE_EN
+// #define ENABLE_LANGUAGE_FR
+// #define ENABLE_LANGUAGE_IT
+// #define ENABLE_LANGUAGE_NL
+// #define ENABLE_LANGUAGE_ES
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
@@ -79,10 +79,10 @@
  * - SPEAKER_FREQUENCY ist die Tonhoehe, wenn der Speaker ein Lautpsrecher ist.
  * - SPEAKER_IS_BUZZER: wenn einkommentiert wird davon ausgegangen, dass am Pin SPEAKER ein Buzzer haengt (Reichelt: SUMMER TDB 05).
  */
-//#define ALARM
-#define SPEAKER_FREQUENCY 200000
-#define MAX_BUZZ_TIME_IN_MINUTES 10
-#define SPEAKER_IS_BUZZER
+// #define ALARM
+// #define SPEAKER_FREQUENCY 200000
+// #define MAX_BUZZ_TIME_IN_MINUTES 10
+// #define SPEAKER_IS_BUZZER
 
 /*
  * Die Status-LEDs koennen hier durch auskommentieren ausgeschaltet werden.
