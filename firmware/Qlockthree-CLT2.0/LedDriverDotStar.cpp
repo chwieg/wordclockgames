@@ -29,7 +29,7 @@
 
    @param data Pin, an dem die Data-Line haengt.
 */
-LedDriverDotStar::LedDriverDotStar(byte dataPin, byte clockPin) {
+LedDriverDotStar::LedDriverDotStar(uint8_t dataPin, uint8_t clockPin) {
   _strip = new Adafruit_DotStar(NUM_PIXEL, dataPin, clockPin, DOTSTAR_BGR);
   _strip->begin();
   _wheelPos = 0;
@@ -61,7 +61,7 @@ void LedDriverDotStar::printSignature() {
    @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
                     FALSE, wenn es ein Refresh-Aufruf war.
 */
-void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
+void LedDriverDotStar::writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
 
   if (((settings.getColor() == color_rgb_continuous) || (a_color == color_rgb_continuous)) && _transitionCompleted) {
@@ -85,8 +85,8 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     uint32_t colorOld = 0;
     uint32_t colorOverlay1 = 0;
     uint32_t colorOverlay2 = 0;
-    byte brightnessOld = 0;
-    byte brightnessNew = 0;
+    uint8_t brightnessOld = 0;
+    uint8_t brightnessNew = 0;
 
     _dirty = false;
 
@@ -103,7 +103,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
         switch (settings.getTransitionMode()) {
           case Settings::TRANSITION_MODE_FADE:
-            for (byte i = 0; i < 11; i++) {
+            for (uint8_t i = 0; i < 11; i++) {
               _matrixOld[i] = _matrixNew[i];
               if (_demoTransition) {
                 _matrixNew[i] = 0;
@@ -120,7 +120,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
           case Settings::TRANSITION_MODE_SLIDE:
             if (((rtc.getMinutes() % 5) == 0) || _demoTransition) {
               Transitions::resetTransition();
-              for (byte i = 0; i < 11; i++) {
+              for (uint8_t i = 0; i < 11; i++) {
                 _matrixOld[i] = 0;
                 _matrixOverlay[i] = 0;
               }
@@ -129,7 +129,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
             break;
           case Settings::TRANSITION_MODE_NORMAL:
             if (_demoTransition) {
-              for (byte i = 0; i < 11; i++) {
+              for (uint8_t i = 0; i < 11; i++) {
                 _matrixNew[i] = 0;
               }
               _transitionCompleted = false;
@@ -141,7 +141,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
         }
       }
       if (_transitionCompleted) {
-        for (byte i = 0; i < 11; i++) {
+        for (uint8_t i = 0; i < 11; i++) {
           _matrixOld[i] = 0;
           _matrixNew[i] = matrix[i];
           _matrixOverlay[i] = 0;
@@ -221,9 +221,9 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     **************/
     _clear();
 
-    for (byte y = 0; y < 10; y++) {
-      for (byte x = 5; x < 16; x++) {
-        word t = 1 << x;
+    for (uint8_t y = 0; y < 10; y++) {
+      for (uint8_t x = 5; x < 16; x++) {
+        uint16_t t = 1 << x;
         if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t) ) {
           _setPixel(15 - x, y, color);
         }
@@ -245,8 +245,8 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     }
 
     // wir muessen die Eck-LEDs und die Alarm-LED umsetzen...
-    byte cornerLedCount[] = {1, 0, 3, 2, 4};
-    for ( byte i = 0; i < 5; i++) {
+    uint8_t cornerLedCount[] = {1, 0, 3, 2, 4};
+    for ( uint8_t i = 0; i < 5; i++) {
       if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
         _setPixel(110 + i, color);
       }
@@ -268,7 +268,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
 
    @param brightnessInPercent Die Helligkeit.
 */
-void LedDriverDotStar::setBrightness(byte brightnessInPercent) {
+void LedDriverDotStar::setBrightness(uint8_t brightnessInPercent) {
   if ((brightnessInPercent != _brightnessInPercent) && _transitionCompleted) {
     _brightnessInPercent = brightnessInPercent;
     _dirty = true;
@@ -278,7 +278,7 @@ void LedDriverDotStar::setBrightness(byte brightnessInPercent) {
 /**
    Die aktuelle Helligkeit bekommen.
 */
-byte LedDriverDotStar::getBrightness() {
+uint8_t LedDriverDotStar::getBrightness() {
   return _brightnessInPercent;
 }
 
@@ -288,7 +288,7 @@ byte LedDriverDotStar::getBrightness() {
    @param linesToWrite Wieviel Zeilen aus dem Bildspeicher sollen
                        geschrieben werden?
 */
-void LedDriverDotStar::setLinesToWrite(byte linesToWrite) {
+void LedDriverDotStar::setLinesToWrite(uint8_t linesToWrite) {
 }
 
 /**
@@ -316,14 +316,14 @@ void LedDriverDotStar::clearData() {
 /**
    Einen X/Y-koordinierten Pixel in der Matrix setzen.
 */
-void LedDriverDotStar::_setPixel(byte x, byte y, uint32_t c) {
+void LedDriverDotStar::_setPixel(uint8_t x, uint8_t y, uint32_t c) {
   _setPixel(x + (y * 11), c);
 }
 
 /**
    Einen Pixel im Streifen setzten (die Eck-LEDs sind am Ende).
 */
-void LedDriverDotStar::_setPixel(byte num, uint32_t c) {
+void LedDriverDotStar::_setPixel(uint8_t num, uint32_t c) {
   if (num < 110) {
     if ((num / 11) % 2 == 0) {
       _strip->setPixelColor(num, c);
@@ -354,7 +354,7 @@ void LedDriverDotStar::_setPixel(byte num, uint32_t c) {
    Funktion fuer saubere 'Regenbogen'-Farben.
    Kopiert aus den Adafruit-Beispielen (strand).
 */
-uint32_t LedDriverDotStar::_wheel(byte brightness, byte wheelPos) {
+uint32_t LedDriverDotStar::_wheel(uint8_t brightness, uint8_t wheelPos) {
   if (wheelPos < 85) {
     return _strip->Color(_brightnessScaleColor(brightness, wheelPos * 3), _brightnessScaleColor(brightness, 255 - wheelPos * 3), _brightnessScaleColor(brightness, 0));
   } else if (wheelPos < 170) {
@@ -369,7 +369,7 @@ uint32_t LedDriverDotStar::_wheel(byte brightness, byte wheelPos) {
 /**
    Hilfsfunktion fuer das Skalieren der Farben.
 */
-byte LedDriverDotStar::_brightnessScaleColor(byte brightness, byte colorPart) {
+uint8_t LedDriverDotStar::_brightnessScaleColor(uint8_t brightness, uint8_t colorPart) {
   return map(brightness, 0, 100, 0, colorPart);
 }
 
@@ -377,7 +377,7 @@ byte LedDriverDotStar::_brightnessScaleColor(byte brightness, byte colorPart) {
    Streifen loeschen.
 */
 void LedDriverDotStar::_clear() {
-  for (byte i = 0; i < NUM_PIXEL; i++) {
+  for (uint8_t i = 0; i < NUM_PIXEL; i++) {
     _strip->setPixelColor(i, 0);
   }
 }

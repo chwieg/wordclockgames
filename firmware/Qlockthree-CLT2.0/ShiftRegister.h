@@ -27,9 +27,9 @@
 
 class ShiftRegister {
   public:
-    ShiftRegister(byte dataPin, byte clockPin, byte latchPin);
+    ShiftRegister(uint8_t dataPin, uint8_t clockPin, uint8_t latchPin);
 
-    void shiftOut(word data);
+    void shiftOut(uint16_t data);
     void shiftOutABit(boolean bitIsSet);
 
     void prepareShiftregisterWrite();
@@ -37,9 +37,9 @@ class ShiftRegister {
 
   private:
     // slow version
-    byte _dataPin;
-    byte _clockPin;
-    byte _latchPin;
+    uint8_t _dataPin;
+    uint8_t _clockPin;
+    uint8_t _latchPin;
 
     // fast version
     uint8_t _dataBit;

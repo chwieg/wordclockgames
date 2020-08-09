@@ -19,14 +19,14 @@
 /**
  * Initialisierung mit dem Pin, an dem der Tempsensor hängt
  */
-MyTempSens::MyTempSens(byte pin) {
+MyTempSens::MyTempSens(uint8_t pin) {
   _pin = pin;
   pinMode(_pin, INPUT);
   _tempSamplesSum = 0;
   _idx = 0;
   _slope = 100;
   _offsetC = 0;
-  for (byte i = 0; i < NR_OF_SAMPLES; i++) {
+  for (uint8_t i = 0; i < NR_OF_SAMPLES; i++) {
     _tempSamples[i] = 0;
   }
 }
@@ -41,7 +41,7 @@ void MyTempSens::initLM335() {
   _offsetC = -273;
 }
 
-byte MyTempSens::getTempC() {
+uint8_t MyTempSens::getTempC() {
   unsigned long temp = (unsigned long)_tempSamplesSum * 5 * _slope / (1023 * NR_OF_SAMPLES) + _offsetC;
   return temp;
 }

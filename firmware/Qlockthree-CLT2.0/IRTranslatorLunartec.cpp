@@ -50,7 +50,7 @@ void IRTranslatorLunartec::printSignature() {
   DEBUG_PRINTLN(F("Lunartec NX6612-901"));
 }
 
-byte IRTranslatorLunartec::buttonForCode(unsigned long code) {
+uint8_t IRTranslatorLunartec::buttonForCode(unsigned long code) {
   switch (code) {
     case LUNBARTEC_BRIGHTER:
       return REMOTE_BUTTON_BRIGHTER;

@@ -25,11 +25,11 @@
 // #define DEBUG
 #include "Debug.h"
 
-TimeStamp::TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
+TimeStamp::TimeStamp(uint8_t minutes, uint8_t hours, uint8_t date, uint8_t dayOfWeek, uint8_t month, uint8_t year) {
     set(minutes, hours, date, dayOfWeek, month, year);
 }
 
-byte TimeStamp::getMinutes() {
+uint8_t TimeStamp::getMinutes() {
     return _minutes;
 }
 
@@ -88,54 +88,54 @@ unsigned long TimeStamp::getMinutesOfCentury() {
     return retVal;
 }
 
-byte TimeStamp::getHours() {
+uint8_t TimeStamp::getHours() {
     return _hours;
 }
 
-byte TimeStamp::getDate() {
+uint8_t TimeStamp::getDate() {
     return _date;
 }
 
-byte TimeStamp::getDayOfWeek() {
+uint8_t TimeStamp::getDayOfWeek() {
     return _dayOfWeek;
 }
 
-byte TimeStamp::getMonth() {
+uint8_t TimeStamp::getMonth() {
     return _month;
 }
 
-byte TimeStamp::getYear() {
+uint8_t TimeStamp::getYear() {
     return _year;
 }
 
-void TimeStamp::setMinutes(byte minutes) {
+void TimeStamp::setMinutes(uint8_t minutes) {
     _minutes = minutes;
 }
 
-void TimeStamp::setHours(byte hours) {
+void TimeStamp::setHours(uint8_t hours) {
     _hours = hours;
 }
 
-void TimeStamp::setDayOfWeek(byte dayOfWeek) {
+void TimeStamp::setDayOfWeek(uint8_t dayOfWeek) {
     _dayOfWeek = dayOfWeek;
 }
 
-void TimeStamp::setDate(byte date) {
+void TimeStamp::setDate(uint8_t date) {
     _date = date;
     CheckDateValidity();
 }
 
-void TimeStamp::setMonth(byte month) {
+void TimeStamp::setMonth(uint8_t month) {
     _month = month;
     CheckDateValidity();
 }
 
-void TimeStamp::setYear(byte year) {
+void TimeStamp::setYear(uint8_t year) {
     _year = year;
     CheckDateValidity();
 }
 
-void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
+void TimeStamp::set(uint8_t minutes, uint8_t hours, uint8_t date, uint8_t dayOfWeek, uint8_t month, uint8_t year) {
     _minutes = minutes;
     _hours = hours;
     _date = date;
@@ -167,7 +167,7 @@ void TimeStamp::incMinutes() {
  * Die Minuten um 5 Min erhoehen.
  */
 void TimeStamp::incFiveMinutes() {
-  for(byte i = 0; i < 5; i++){
+  for(uint8_t i = 0; i < 5; i++){
     incMinutes();
   }
 }
@@ -210,21 +210,21 @@ void TimeStamp::decHours() {
 /**
  * Die Stunden erhoehen.
  */
-void TimeStamp::incYear(byte addYear) {
+void TimeStamp::incYear(uint8_t addYear) {
     setYear(_year + addYear);
 }
 
 /**
  * Die Stunden erhoehen.
  */
-void TimeStamp::incMonth(byte addMonth) {
+void TimeStamp::incMonth(uint8_t addMonth) {
     setMonth(_month + addMonth);
 }
 
 /**
  * Die Stunden erhoehen.
  */
-void TimeStamp::incDate(byte addDate) {
+void TimeStamp::incDate(uint8_t addDate) {
     setDate(_date + addDate);
 }
 
@@ -295,9 +295,9 @@ void TimeStamp::CheckDateValidity() {
 void TimeStamp::CalculateAndSetDayOfWeek() {
     // (Adopted) alghorithm by Schwerdtfeger
     // This alghorithm is only valid from 1st March 2000 to 31st December 2099
-    byte g = _year;
+    uint8_t g = _year;
     if (_month < 3) g--;
-    byte e;
+    uint8_t e;
     switch (_month) {
         default: e = 0; break;
         case 2: 
@@ -311,12 +311,12 @@ void TimeStamp::CalculateAndSetDayOfWeek() {
         case 12: e = 4; break;
         case 10: e = 6; break;
     }
-    byte w = (_date + e + g + g/4) % 7;
+    uint8_t w = (_date + e + g + g/4) % 7;
     if (!w) w = 7;
     setDayOfWeek(w);
 }
 
-byte TimeStamp::getDaysOfMonth(byte month, byte year) {
+uint8_t TimeStamp::getDaysOfMonth(uint8_t month, uint8_t year) {
     // Only valid for years from 2000 to 2099
     switch (month) {
         default: return 0;

@@ -21,7 +21,7 @@
 class IRTranslatorLunartec : public IRTranslator {
   public:
     void printSignature();
-    byte buttonForCode(unsigned long code);
+    uint8_t buttonForCode(unsigned long code);
 };
 
 #endif

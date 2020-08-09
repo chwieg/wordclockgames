@@ -18,10 +18,10 @@ func hex2decAscii(hexStr string) string {
 	decStr := strconv.Itoa(int(decInt))
 	//fmt.Printf("%T, %v\n", decStr, decStr)
 
-	decAsciiBytes := []byte(decStr)
-	//fmt.Printf("%T, %v\n", decAsciiBytes, decAsciiBytes)
+	decAsciiuint8_ts := []uint8_t(decStr)
+	//fmt.Printf("%T, %v\n", decAsciiuint8_ts, decAsciiuint8_ts)
 
-	decAsciiStr := hex.EncodeToString(decAsciiBytes)
+	decAsciiStr := hex.EncodeToString(decAsciiuint8_ts)
 	//fmt.Printf("%T, %v\n", decAsciiStr, decAsciiStr)
 
 	return decAsciiStr

@@ -1,10 +1,10 @@
 
-> svelte-app@1.0.0 dev /home/christian/wortuhr/wordclockgames/frontend
+> svelte-app@1.0.0 dev /home/christian/wortuhr/uint16_tclockgames/frontend
 > rollup -c -w
 
 [1m[32mLiveReload enabled[39m[22m
 
-> svelte-app@1.0.0 start /home/christian/wortuhr/wordclockgames/frontend
+> svelte-app@1.0.0 start /home/christian/wortuhr/uint16_tclockgames/frontend
 > sirv public "--dev"
 
 [H[2J

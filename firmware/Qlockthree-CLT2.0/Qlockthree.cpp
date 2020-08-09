@@ -29,7 +29,7 @@
    V 1.9.3: - Glimmen wieder behoben.
    V 1.9.4: - Modus zum Einstellen der Helligkeit eingefuehrt.
    V 2.0:   - Sprachrelevante Dinge ausgelagert, so kann man mehr Sprachen haben und einfach durch einkommentieren aktivieren.
-            - setWords in setMinutes und setMinutes in setCorners umbenannt, weil es mehr Sinn ergibt.
+            - setuint16_ts in setMinutes und setMinutes in setCorners umbenannt, weil es mehr Sinn ergibt.
             - setCorners in eigene Datei ausgelagert, weil viele Bastler sich vertun und in der Routine Aenderungen vornehmen muessen.
             - LDR in eigene Klasse ausgelagert und Werte geglaettet. Am Anfang werden 1000 Werte gelesen, damit er sich einpegelt.
             - Signal vom DCF77-Empfaenger geglaettet, damit nicht ein einzelner falscher Peak das Telegramm zerstoert.
@@ -48,7 +48,7 @@
    V 2.0.3: - SPEAKER_IS_BUZZER eingefuehrt, damit kann man sagen, ob man einen Lautsprecher oder Piezo-Buzzer als Alarm verwendet.
    V 2.0.4: - falsches BREAK dank Lars behoben.
    V 2.0.5: - Franzoesisch hinzugefuegt, Woerter_??.h's anschaulicher gemacht. Weitere Sprachen angelegt, aber noch nicht die Logik implementiert (Hilfe?!).
-   V 2.0.6: - cleanWordsForAlarmSettingMode() eingefuehrt, damit das Stellen des Alarms sprachenunabhaengig ist.
+   V 2.0.6: - cleanuint16_tsForAlarmSettingMode() eingefuehrt, damit das Stellen des Alarms sprachenunabhaengig ist.
             - Das DCF77-Signal kann per Compiler-Schalter invertiert werden.
    V 2.0.7: - Neuer Modus: Umschaltung LDR auto/manuell dank Alexander.
    V 2.0.8: - Genauigkeit verbessert, dank Peter (Interrupt auf FALLING). @Peter: Das Zurueckscheiben in die DS1307 passiert im Normalbetrieb ja
@@ -126,7 +126,7 @@
                 je nach verwendetem Empfaenger realisiert werden).
             - Flackern in Ext-Menues und Manual-Brightness behoben, falsch durchdachtes linesToWrite-Statement (interessiert nur DefaultLedDriver,
                 alle anderen ignorieren es eh).
-            - Fehler in der DS1307-Klasse behoben. Nicht immer kommen die angeforderten 7 Bytes, dann verwerfen und neu anfordern (und nach
+            - Fehler in der DS1307-Klasse behoben. Nicht immer kommen die angeforderten 7 uint8_ts, dann verwerfen und neu anfordern (und nach
                 8 Versuchen abbrechen). Der I2C-Bus ist wohl speziell bei LED-Stripes gerne mal gestoert, dann kommen die beruehmten '85' Sekunden.
             - Mode fuer die Visualisierung des DCF77-Empfangs (im Ext-Menue nach dem LED-Test) eingefuehrt. Man kann damit abschaetzen, wie gut der
                 DCF77-Empfang ist. Mit der gelben LED muessen die Ecken durchschalten. Schalten sie wild durcheinander, gibt es Fehlsignale.
@@ -538,8 +538,8 @@ void setDisplayToBlank();
 void setDisplayToResume();
 void setDisplayBrighter();
 void setDisplayDarker();
-void setDisplayBrightness(byte);
-void enableFallBackCounter(byte);
+void setDisplayBrightness(uint8_t);
+void enableFallBackCounter(uint8_t);
 void disableFallBackCounter();
 void updateFallBackCounter();
 void incDecMinutes(boolean);
@@ -584,7 +584,7 @@ IRTranslatorCLT irTranslatorBT;
    Die Real-Time-Clock mit der Status-LED fuer das SQW-Signal.
 */
 MyRTC rtc(0x68, PIN_SQW_LED);
-volatile byte helperSeconds;
+volatile uint8_t helperSeconds;
 
 /**
    Der Funkempfaenger (DCF77-Signal der PTB Braunschweig).
@@ -615,7 +615,7 @@ unsigned long lastBrightnessCheck;
 /**
    Die Helligkeit zum Anzeigen mit den Balken.
 */
-byte brightnessToDisplay;
+uint8_t brightnessToDisplay;
 
 /**
    Die Tasten.
@@ -631,17 +631,17 @@ Mode mode = STD_MODE_NORMAL;
 Mode lastMode = mode;
 
 // Die Matrix, eine Art Bildschirmspeicher
-word matrix[16];
+uint16_t matrix[16];
 
 // Hilfsvariable, da I2C und Interrupts nicht zusammenspielen
 volatile boolean needsUpdateFromRtc = true;
 
 // Fuer den Bildschirm-Test
-byte testColumn;
+uint8_t testColumn;
 
 // Fuer fps-Anzeige
 #ifdef DEBUG
-word frames = 0;
+uint16_t frames = 0;
 unsigned long lastFpsCheck = 0;
 #endif
 
@@ -651,10 +651,15 @@ unsigned int dcf77ErrorMinutes;
 #endif
 
 // Zähler für fall back timer im Menu
-byte fallBackCounter = 0;
+uint8_t fallBackCounter = 0;
 
 // Indiziert, ob Event aktiv ist.
 bool evtActive = false;
+
+// Variablen für den Game Mode CON4 (4 gewinnt)
+uint8_t colorDef[NUM_COLORS][3];
+uint8_t board[N_ROWS][N_COLS];
+uint8_t corners;
 
 /**
    Aenderung der Anzeige als Funktion fuer den Interrupt, der ueber das SQW-Signal
@@ -730,7 +735,7 @@ void setup() {
 
   // DCF77-LED drei Mal als 'Hello' blinken lassen
   // und Speaker piepsen kassen, falls ENABLE_ALARM eingeschaltet ist.
-  for (byte i = 0; i < 3; i++) {
+  for (uint8_t i = 0; i < 3; i++) {
     dcf77.statusLed(true);
 #ifdef ALARM
     if (settings.getEnableAlarm()) {
@@ -809,7 +814,7 @@ void setup() {
 
   // rtcSQWLed-LED drei Mal als 'Hello' blinken lassen
   // und Speaker piepsen kassen, falls ENABLE_ALARM eingeschaltet ist.
-  for (byte i = 0; i < 3; i++) {
+  for (uint8_t i = 0; i < 3; i++) {
     rtc.statusLed(true);
 #ifdef ALARM
     if (settings.getEnableAlarm()) {
@@ -872,8 +877,6 @@ void setup() {
 #endif
 }
 
-#define NUM_BYTES_BT_CON4 50 // Anzahl an Bytes die im Game Mode übertragen werden
-byte tmp_cnt = 0; // nur fürs Schnelle Testen
 /**
    loop() wird endlos auf alle Ewigkeit vom Microcontroller durchlaufen
 */
@@ -905,7 +908,7 @@ void loop() {
       lastBrightnessCheck = millis();
     }
     if (lastBrightnessCheck + LDR_CHECK_RATE < millis()) { // langsam nachsehen...
-      byte lv = ldr.value();
+      uint8_t lv = ldr.value();
       if (ledDriver.getBrightness() > lv) {
         ledDriver.setBrightness(ledDriver.getBrightness() - 1);
       } else if (ledDriver.getBrightness() < lv) {
@@ -939,7 +942,7 @@ void loop() {
       case STD_MODE_NORMAL:
         // Event Abfrage
 #ifdef EVENTS
-        for (byte evtID = 0; evtID < nbrOfEvts; evtID++) {
+        for (uint8_t evtID = 0; evtID < nbrOfEvts; evtID++) {
           if ((rtc.getDate() == events[evtID].getDate()) & (rtc.getMonth() == events[evtID].getMonth())) {
             switch (settings.getEvent()) {
               case 0:
@@ -993,18 +996,18 @@ void loop() {
       case EXT_MODE_TIME_SHIFT:
         renderer.clearScreenBuffer(matrix);
         if (settings.getTimeShift() < 0) {
-          for (byte x = 0; x < 3; x++) {
+          for (uint8_t x = 0; x < 3; x++) {
             ledDriver.setPixelInScreenBuffer(x, 1, matrix);
           }
         } else if (settings.getTimeShift() > 0) {
-          for (byte x = 0; x < 3; x++) {
+          for (uint8_t x = 0; x < 3; x++) {
             ledDriver.setPixelInScreenBuffer(x, 1, matrix);
           }
-          for (byte y = 0; y < 3; y++) {
+          for (uint8_t y = 0; y < 3; y++) {
             ledDriver.setPixelInScreenBuffer(1, y, matrix);
           }
         }
-        for (byte i = 0; i < 7; i++) {
+        for (uint8_t i = 0; i < 7; i++) {
           matrix[3 + i] |= pgm_read_byte_near(&(ziffern[abs(settings.getTimeShift()) % 10][i])) << 5;
           if (abs(settings.getTimeShift()) > 9) {
             matrix[3 + i] |= pgm_read_byte_near(&(ziffern[1][i])) << 10;
@@ -1022,7 +1025,7 @@ void loop() {
         } else {
           renderer.setMinutes(alarm.getHours() + settings.getTimeShift(), alarm.getMinutes(), settings.getLanguage(), matrix);
           renderer.setCorners(alarm.getMinutes(), settings.getRenderCornersCw(), matrix);
-          renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
+          renderer.cleanuint16_tsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if (alarm.getShowAlarmTimeTimer() % 2 == 0) {
             renderer.activateAlarmLed(matrix); // Alarm-LED
           }
@@ -1034,7 +1037,7 @@ void loop() {
       case STD_MODE_DATE:
         renderer.clearScreenBuffer(matrix);
         // Anzeige des Datums
-        for (byte i = 0; i < 5; i++) {
+        for (uint8_t i = 0; i < 5; i++) {
           matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() / 10][i])) << 11;
           matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() % 10][i])) << 6;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() / 10][i])) << 11;
@@ -1049,7 +1052,7 @@ void loop() {
       case STD_MODE_TEMP:
       Serial.println(tempSens.getTempC());
         renderer.clearScreenBuffer(matrix);
-        for (byte i = 0; i < 7; i++) {
+        for (uint8_t i = 0; i < 7; i++) {
           matrix[1 + i] |= pgm_read_byte_near(&(ziffern[tempSens.getTempC() / 10][i])) << 11;
           matrix[1 + i] |= pgm_read_byte_near(&(ziffern[tempSens.getTempC() % 10][i])) << 5;
         }
@@ -1058,7 +1061,7 @@ void loop() {
 #endif
       case STD_MODE_SECONDS:
         renderer.clearScreenBuffer(matrix);
-        for (byte i = 0; i < 7; i++) {
+        for (uint8_t i = 0; i < 7; i++) {
           matrix[1 + i] |= pgm_read_byte_near(&(ziffern[helperSeconds / 10][i])) << 11;
           matrix[1 + i] |= pgm_read_byte_near(&(ziffern[helperSeconds % 10][i])) << 5;
         }
@@ -1066,11 +1069,11 @@ void loop() {
       case EXT_MODE_LDR_MODE:
         renderer.clearScreenBuffer(matrix);
         if (settings.getUseLdr()) {
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
             renderer.setMenuText("A", Renderer::TEXT_POS_MIDDLE, matrix);
           }
         } else {
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
             renderer.setMenuText("M", Renderer::TEXT_POS_MIDDLE, matrix);
           }
         }
@@ -1082,8 +1085,8 @@ void loop() {
       case STD_MODE_BRIGHTNESS:
         renderer.clearScreenBuffer(matrix);
         brightnessToDisplay = map(settings.getBrightness(), 1, 100, 0, 9);
-        for (byte xb = 0; xb < brightnessToDisplay; xb++) {
-          for (byte yb = 0; yb <= xb; yb++) {
+        for (uint8_t xb = 0; xb < brightnessToDisplay; xb++) {
+          for (uint8_t yb = 0; yb <= xb; yb++) {
             matrix[9 - yb] |= 1 << (14 - xb);
           }
         }
@@ -1157,14 +1160,14 @@ void loop() {
         renderer.clearScreenBuffer(matrix);
         if (settings.getColor() <= color_single_max) {
           renderer.setMenuText("C", Renderer::TEXT_POS_TOP, matrix);
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
             matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() / 10][i])) << 10;
             matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() % 10][i])) << 5;
           }
         }
         else {
           renderer.setMenuText("CC", Renderer::TEXT_POS_TOP, matrix);
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
             matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[(settings.getColor() - color_single_max) / 10][i])) << 10;
             matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[(settings.getColor() - color_single_max) % 10][i])) << 5;
           }
@@ -1173,7 +1176,7 @@ void loop() {
       case EXT_MODE_COLOR_CHANGE:
         renderer.clearScreenBuffer(matrix);
         renderer.setMenuText("CR", Renderer::TEXT_POS_TOP, matrix);
-        for (byte i = 0; i < 7; i++) {
+        for (uint8_t i = 0; i < 7; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColorChangeRate() / 10][i])) << 11;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColorChangeRate() % 10][i])) << 5;
         }
@@ -1182,7 +1185,7 @@ void loop() {
       case EXT_MODE_JUMP_TIMEOUT:
         renderer.clearScreenBuffer(matrix);
         renderer.setMenuText("FB", Renderer::TEXT_POS_TOP, matrix);
-        for (byte i = 0; i < 7; i++) {
+        for (uint8_t i = 0; i < 7; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getJumpToNormalTimeout() / 10][i])) << 11;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getJumpToNormalTimeout() % 10][i])) << 5;
         }
@@ -1205,7 +1208,7 @@ void loop() {
         {
           renderer.clearScreenBuffer(matrix);
           renderer.setMinutes(settings.getNightModeTime(false)->getHours(), settings.getNightModeTime(false)->getMinutes(), settings.getLanguage(), matrix);
-          renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
+          renderer.cleanuint16_tsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if ( (settings.getNightModeTime(false)->getHours() >= 12) ) {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
@@ -1221,7 +1224,7 @@ void loop() {
         {
           renderer.clearScreenBuffer(matrix);
           renderer.setMinutes(settings.getNightModeTime(true)->getHours(), settings.getNightModeTime(true)->getMinutes(), settings.getLanguage(), matrix);
-          renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
+          renderer.cleanuint16_tsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if ( (settings.getNightModeTime(true)->getHours() >= 12) ) {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
@@ -1242,7 +1245,7 @@ void loop() {
       case EXT_MODE_YEARSET:   // Einstellung Jahr
         renderer.clearScreenBuffer(matrix);
         renderer.setMenuText("YY", Renderer::TEXT_POS_TOP, matrix);
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getYear() % 10][i])) << 5;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getYear() / 10][i])) << 10;
          }
@@ -1252,12 +1255,12 @@ void loop() {
         renderer.clearScreenBuffer(matrix);
         renderer.setMenuText("MM", Renderer::TEXT_POS_TOP, matrix);
          if (rtc.getMonth() > 9) {
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() % 10][i])) << 5;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() / 10][i])) << 10;
           }
           } else {
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() % 10][i])) << 7;           
          }
         }
@@ -1267,12 +1270,12 @@ void loop() {
         renderer.clearScreenBuffer(matrix);
         renderer.setMenuText("DD", Renderer::TEXT_POS_TOP, matrix);
          if (rtc.getDate() > 9) {
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() % 10][i])) << 5;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() / 10][i])) << 10;
           }
           } else {
-          for (byte i = 0; i < 5; i++) {
+          for (uint8_t i = 0; i < 5; i++) {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() % 10][i])) << 7;           
          }
         }
@@ -1347,7 +1350,7 @@ void loop() {
           renderer.activateAlarmLed(matrix); // Alarm-LED
         }
 #endif
-        for (byte i = 0; i < 11; i++) {
+        for (uint8_t i = 0; i < 11; i++) {
           ledDriver.setPixelInScreenBuffer(testColumn, i, matrix);
         }
         testColumn++;
@@ -1361,7 +1364,7 @@ void loop() {
         // Anzeige des letzten erfolgreichen DCF-Syncs (samplesOK) in Stunden:Minuten
         renderer.clearScreenBuffer(matrix);
         dcf77ErrorMinutes = dcf77.getDcf77LastSuccessSyncMinutes();
-        for (byte i = 0; i < 5; i++) {
+        for (uint8_t i = 0; i < 5; i++) {
           matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 / 10][i])) << 11;
           matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 % 10][i])) << 6;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 / 10][i])) << 11;
@@ -1391,7 +1394,7 @@ void loop() {
           break;
         case EXT_MODE_NAME:
           renderer.clearScreenBuffer(matrix);
-          for (byte i=1; i<8; i++) {
+          for (uint8_t i=1; i<8; i++) {
             matrix[i] |= 0b0000010000000000;
           }
           break;
@@ -1408,11 +1411,15 @@ void loop() {
 
     // Update mit onChange = true, weil sich hier (aufgrund needsUpdateFromRtc) immer was geaendert hat.
     // Entweder weil wir eine Sekunde weiter sind, oder weil eine Taste gedrueckt wurde.
-    ledDriver.writeScreenBufferToMatrix(matrix, true, settings.getColor());
+    if (mode == EXT_MODE_CON4) {
+      ledDriver.writeBoardToMatrix(colorDef, board, corners);
+    } else {
+      ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+    }
   }
 #ifdef USE_EXT_MODE_DCF_DEBUG
   if (mode == EXT_MODE_DCF_DEBUG) {
-    byte currentErrorCorner = dcf77.getDcf77ErrorCorner();
+    uint8_t currentErrorCorner = dcf77.getDcf77ErrorCorner();
     dcf77.updateDcf77ErrorCorner(settings.getDcfSignalIsInverted());
     if (currentErrorCorner != dcf77.getDcf77ErrorCorner()) {
       needsUpdateFromRtc = true;
@@ -1459,29 +1466,64 @@ void loop() {
 
 #ifdef REMOTE_BLUETOOTH
   unsigned int lastIrCodeBT = 0;
-  unsigned long serialInput = 10;
-  char btReadBuffer[NUM_BYTES_BT_CON4];
-  size_t numBtReadBytes = 0;
+  unsigned long serialInput = 0;
+  uint8_t btReadBuffer[NUM_BYTES_BT_CON4];
+  uint8_t bytePos = 0;
+  size_t numBtreadBytes = 0;
   while (Serial.available() > 0) {
     DEBUG_PRINTLN(F("BT Serial available:"));
-    if (mode==EXT_MODE_CON4 && tmp_cnt<10) {
-      tmp_cnt++;
-      numBtReadBytes = Serial.readBytes(btReadBuffer, NUM_BYTES_BT_CON4);
-      Serial.print("number of bytes received: ");
-      Serial.println(numBtReadBytes);
-      for (byte i=0; i<numBtReadBytes; i++) {
+    if (mode==EXT_MODE_CON4) {
+      numBtreadBytes = Serial.readBytes(btReadBuffer, NUM_BYTES_BT_CON4);
+
+      Serial.print("number of uint8_ts received: ");
+      Serial.println(numBtreadBytes);
+      for (uint8_t i=0; i<numBtreadBytes; i++) {
         Serial.print(btReadBuffer[i], HEX);
         Serial.print(" ");
       }
       Serial.println();
+      switch (numBtreadBytes) {
+        case 8: // remote command
+          Serial.println("remote command");
+          serialInput = 
+            (btReadBuffer[0] & 0x0F) * 10000000 +
+            (btReadBuffer[1] & 0x0F) * 1000000 +
+            (btReadBuffer[2] & 0x0F) * 100000 +
+            (btReadBuffer[3] & 0x0F) * 10000 +
+            (btReadBuffer[4] & 0x0F) * 1000 +
+            (btReadBuffer[5] & 0x0F) * 100 +
+            (btReadBuffer[6] & 0x0F) * 10 +
+            btReadBuffer[7] & 0x0F;
+          break;
+        case NUM_BYTES_BT_CON4: // game command
+          Serial.println("game command");
+          for (uint8_t i=0; i<NUM_COLORS; i++) {
+            for (uint8_t j=0; j<3; j++) {
+              colorDef[i][j] = btReadBuffer[bytePos++];
+            }
+          }  
+          for (uint8_t row=0; row<N_ROWS; row++) {
+            for (uint8_t col=0; col<N_COLS; col++) {
+              board[row][col] = btReadBuffer[bytePos++];
+            } 
+          }
+          corners = btReadBuffer[bytePos];
+          needsUpdateFromRtc = true;
+          break;
+        default:
+          Serial.println("unknown command");
+          break;
+      }
     } else {
       serialInput = Serial.parseInt();
+      Serial.read();
+    }
+    if (serialInput > 0) {
       DEBUG_PRINTLN2(serialInput, DEC);
       DEBUG_PRINTLN2(serialInput, HEX);
       lastIrCodeBT = irTranslatorBT.buttonForCode(serialInput); 
       DEBUG_PRINTLN(F("Decoded to button:"));
       DEBUG_PRINTLN2(lastIrCodeBT, DEC);
-      Serial.read();
     }
   }
   if (lastIrCodeBT != 0) {
@@ -1546,7 +1588,11 @@ void loop() {
      Die Matrix auf die LEDs multiplexen, hier 'Refresh-Zyklen'.
   */
   if ((mode != STD_MODE_BLANK) && (mode != STD_MODE_NIGHT)) {
-    ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+    if (mode == EXT_MODE_CON4) {
+      ledDriver.writeBoardToMatrix(colorDef, board, corners);
+    } else {
+      ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+    }
   }
 
   /*
@@ -1608,7 +1654,7 @@ void doubleExtModePressed() {
 
 #ifdef EVENTS
 void doubleEvtModePressed() {
-  static byte i = 0;
+  static uint8_t i = 0;
   disableFallBackCounter();
   needsUpdateFromRtc = true;
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
@@ -2125,13 +2171,13 @@ void setDisplayDarker() {
 /**
  * Die Helligkeit des Display einstellen.
  */
-void setDisplayBrightness(byte brightness) {
+void setDisplayBrightness(uint8_t brightness) {
     settings.setBrightness(brightness);
     settings.saveToEEPROM();
     ledDriver.setBrightness(brightness);
 }
 
-void enableFallBackCounter(byte timeoutSec) {
+void enableFallBackCounter(uint8_t timeoutSec) {
   fallBackCounter = timeoutSec;
 }
 

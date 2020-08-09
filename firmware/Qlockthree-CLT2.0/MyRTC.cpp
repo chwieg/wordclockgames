@@ -16,7 +16,7 @@
  * V 1.5:  - Optimierung hinsichtlich Speicherbedarf.
  * V 1.6:  - Verbessertes Debugging.
  * V 1.7:  - Multi-MCU-Faehigkeit hinzugefuegt.
- * V 1.8:  - Auslesen verbessert. Falls die angeforderten 7 Bytes nicht kommen, verwerfen und neu anfordern.
+ * V 1.8:  - Auslesen verbessert. Falls die angeforderten 7 uint8_ts nicht kommen, verwerfen und neu anfordern.
  * V 1.9:  - Macro zum Stellen der Uhr durch die Compile-Zeit von Kee-Labs geklaut und hier eingefuegt.
  * V 2.0:  - DS1307 nach MyRTC umbenannt, weil es jetzt nicht mehr nur um die DS1307 geht.
  *         - Getrennte Logik fuer das Rachtencksignal (SQW) eingefuehrt, danke an Erich M.
@@ -31,7 +31,7 @@
 /**
  * Initialisierung mit der Adresse der DS1307
  */
-MyRTC::MyRTC(int address, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0) {
+MyRTC::MyRTC(int address, uint8_t statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0) {
     _address = address;
     _statusLedPin = statusLedPin;
     pinMode(_statusLedPin, OUTPUT);
@@ -53,7 +53,7 @@ void MyRTC::statusLed(boolean on) {
  * Die Uhrzeit auslesen und in den Variablen ablegen
  */
 void MyRTC::readTime() {
-    byte returnStatus, count, result, retries = 0;
+    uint8_t returnStatus, count, result, retries = 0;
     do {
         // Reset the register pointer
         Wire.beginTransmission(_address);
@@ -79,7 +79,7 @@ void MyRTC::readTime() {
             _year = bcdToDec(Wire.read());
         } else {
             // Fail
-            // keine 7 Byte zurueck gekommen? Buffer verwerfen...
+            // keine 7 uint8_t zurueck gekommen? Buffer verwerfen...
             for (int i = 0; i < count; i++) {
                 Wire.read();
             }
@@ -152,14 +152,14 @@ void MyRTC::enableSQWOnDS3231() {
 /**
  * Konvertierung Dezimal zu "Binary Coded Decimal"
  */
-byte MyRTC::decToBcd(byte val) {
+uint8_t MyRTC::decToBcd(uint8_t val) {
     return ((val / 10 * 16) + (val % 10));
 }
 
 /**
  * Konvertierung "Binary Coded Decimal" zu Dezimal
  */
-byte MyRTC::bcdToDec(byte val) {
+uint8_t MyRTC::bcdToDec(uint8_t val) {
     return ((val / 16 * 10) + (val % 16));
 }
 
@@ -179,11 +179,11 @@ uint8_t MyRTC::conv2d(const char* p) {
 // Setter/Getter
 //
 
-void MyRTC::setSeconds(byte seconds) {
+void MyRTC::setSeconds(uint8_t seconds) {
     _seconds = seconds;
 }
 
-byte MyRTC::getSeconds() {
+uint8_t MyRTC::getSeconds() {
     return _seconds;
 }
 

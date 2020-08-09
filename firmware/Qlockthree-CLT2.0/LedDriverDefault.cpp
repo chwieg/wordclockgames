@@ -38,7 +38,7 @@
    @param outputEnable Pin, an dem OutputEnable haengt.
    @param linesToWrite Wieviel Zeilen muessen aus dem Bildspeicher uebernommen werden?
 */
-LedDriverDefault::LedDriverDefault(byte data, byte clock, byte latch, byte outputEnable, byte linesToWrite) {
+LedDriverDefault::LedDriverDefault(uint8_t data, uint8_t clock, uint8_t latch, uint8_t outputEnable, uint8_t linesToWrite) {
   _shiftRegister = new ShiftRegister(data, clock, latch);
   _outputEnablePin = outputEnable;
   pinMode(_outputEnablePin, OUTPUT);
@@ -69,7 +69,7 @@ void LedDriverDefault::printSignature() {
    @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
                     FALSE, wenn es ein Refresh-Aufruf war.
 */
-void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
+void LedDriverDefault::writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color) {
 
   if (!_transitionCompleted && (_transitionCounter > 0)) {
     _transitionCounter--;
@@ -95,7 +95,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     if ((helperSeconds == 0) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
       switch (settings.getTransitionMode()) {
         case Settings::TRANSITION_MODE_FADE:
-          for (byte i = 0; i < _linesToWrite; i++) {
+          for (uint8_t i = 0; i < _linesToWrite; i++) {
             _matrixOld[i] = _matrixNew[i]; //Abbild der aktuellen Matrix in Vorversion rüberkopieren
             _matrixNew[DISPLAY_SHIFT i] = matrix[i]; //Abbild der neuen Matrix in aktuelle Matrix einkopieren, um sie beim nächsten überblenden zu haben
           }
@@ -105,7 +105,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
         case Settings::TRANSITION_MODE_SLIDE:
           if ((rtc.getMinutes() % 5) == 0) {
             Transitions::resetTransition();
-            for (byte i = 0; i < _linesToWrite; i++) {
+            for (uint8_t i = 0; i < _linesToWrite; i++) {
               _matrixOld[i] = 0;
               _matrixNew[i] &= ~0b0000000000011111;
             }
@@ -117,7 +117,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       }
     }
     if (_transitionCompleted) {
-      for (byte i = 0; i < _linesToWrite; i++) {
+      for (uint8_t i = 0; i < _linesToWrite; i++) {
         _matrixOld[i] = 0; //Aktuelles Abbild ist nicht verwendbar, weil eventuell keine Uhrzeit
         _matrixNew[DISPLAY_SHIFT i] = matrix[i]; //Abbild der neuen Matrix in aktuelle Matrix einkopieren, um sie beim nächsten überblenden zu haben
       }
@@ -135,7 +135,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     }
   }
 
-  word row = 1;
+  uint16_t row = 1;
 
   if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
     _delayOldMatrix =  map(_transitionCounter, 0, FADINGCOUNTERLOAD, 1, ((_brightnessInPercent * PWM_DURATION) + 132)); //Summand ist Korrektur um die Zeit, die das Einschieben der 32 bit für "PWM dunkel" dauert
@@ -152,7 +152,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   // Jetzt die Daten...
   // wir brauchen keine 16, 10 wuerden reichen... dann gehen aber nicht
   // mehr alle Modi! Also via Variable, die im Modus-Wechsel geaendert wird...
-  for (byte k = 0; k < _linesToWrite; k++) {
+  for (uint8_t k = 0; k < _linesToWrite; k++) {
 #ifdef SKIP_BLANK_LINES
     if (matrix[k] != 0) {
 #endif
@@ -209,14 +209,14 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
 
    @param brightnessInPercent Die Helligkeit.
 */
-void LedDriverDefault::setBrightness(byte brightnessInPercent) {
+void LedDriverDefault::setBrightness(uint8_t brightnessInPercent) {
   _brightnessInPercent = brightnessInPercent;
 }
 
 /**
    Die aktuelle Helligkeit bekommen.
 */
-byte LedDriverDefault::getBrightness() {
+uint8_t LedDriverDefault::getBrightness() {
   return _brightnessInPercent;
 }
 
@@ -226,7 +226,7 @@ byte LedDriverDefault::getBrightness() {
    @param linesToWrite Wieviel Zeilen aus dem Bildspeicher sollen
                        geschrieben werden?
 */
-void LedDriverDefault::setLinesToWrite(byte linesToWrite) {
+void LedDriverDefault::setLinesToWrite(uint8_t linesToWrite) {
   _linesToWrite = linesToWrite;
 }
 

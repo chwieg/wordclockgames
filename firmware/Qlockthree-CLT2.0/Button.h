@@ -24,17 +24,17 @@
 
 class Button {
   public:
-    Button(byte pin, byte pressedAgainst);
-    Button(byte pin1, byte pin2, byte pressedAgainst);
+    Button(uint8_t pin, uint8_t pressedAgainst);
+    Button(uint8_t pin1, uint8_t pin2, uint8_t pressedAgainst);
 
     boolean pressed();
     boolean pressedRaw();
 
   private:
-    byte _pin1;
-    byte _pin2;
+    uint8_t _pin1;
+    uint8_t _pin2;
     boolean _doubleMode;
-    byte _pressedAgainst;
+    uint8_t _pressedAgainst;
     unsigned long _lastPressTime;
 };
 

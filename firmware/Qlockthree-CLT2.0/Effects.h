@@ -45,7 +45,7 @@ extern LedDriverLPD8806 ledDriver;
 
 class Effects {
   public:
-    enum eEffects : byte
+    enum eEffects : uint8_t
     {
       NO_EFFECT = 255,
       EFFECT_FIREWORK = 0,
@@ -74,18 +74,18 @@ class Effects {
     };
 
   public:
-    static void showTickerString(const char* str2disp, byte tickerSpeed, eColors color);
+    static void showTickerString(const char* str2disp, uint8_t tickerSpeed, eColors color);
     static void showIntro(eColors color);
 
-    static void showFireWork(byte posX, eColors color);
-    static void showHeart(byte duration, eColors color);
+    static void showFireWork(uint8_t posX, eColors color);
+    static void showHeart(uint8_t duration, eColors color);
     static void showCandle(eColors color);
-    static void showBitmap(byte bitmapIdx, byte duration, eColors color);
-    static void showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color);
-    static void writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color);
+    static void showBitmap(uint8_t bitmapIdx, uint8_t duration, eColors color);
+    static void showAnimatedBitmap(uint8_t animatedBitmap, uint8_t duration, eColors color);
+    static void writeToBuffer(uint16_t aMatrix[], unsigned int aDuration, eColors color);
 };
 
-const word effectMasksHeart[][10] PROGMEM = {
+const uint16_t effectMasksHeart[][10] PROGMEM = {
   { // 0:heart small
     0b00000000000,
     0b00011011000,
@@ -112,7 +112,7 @@ const word effectMasksHeart[][10] PROGMEM = {
   }
 };
 
-const word effectMasksCandle[][10] PROGMEM = {
+const uint16_t effectMasksCandle[][10] PROGMEM = {
   { // 2:candle 0
     0b00000000000,
     0b00000000000,
@@ -187,7 +187,7 @@ const word effectMasksCandle[][10] PROGMEM = {
   }
 };
 
-const word effectMasksFireWork[][10] PROGMEM = {
+const uint16_t effectMasksFireWork[][10] PROGMEM = {
   { // 8:fireWork1
     0b00000000000,
     0b00000000000,
@@ -262,7 +262,7 @@ const word effectMasksFireWork[][10] PROGMEM = {
   }
 };
 
-const word bitmaps[][11] PROGMEM = {
+const uint16_t bitmaps[][11] PROGMEM = {
   {28, 62, 127, 255, 510, 1020, 510, 255, 127, 62, 28}, // ASCII-Code 0x6 =>(6) Herz
   {0, 40, 130, 0, 257, 0, 257, 0, 130, 40, 0}, // ASCII-Code 0x8 =>(8) gepunkteter Kreis
   {48, 72, 132, 132, 72, 48, 72, 132, 132, 72, 48}, // ASCII-Code 0xE =>(14) Eheringe

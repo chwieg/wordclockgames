@@ -16,7 +16,7 @@
  * V 1.5:  - Optimierung hinsichtlich Speicherbedarf.
  * V 1.6:  - Verbessertes Debugging.
  * V 1.7:  - Multi-MCU-Faehigkeit hinzugefuegt.
- * V 1.8:  - Auslesen verbessert. Falls die angeforderten 7 Bytes nicht kommen, verwerfen und neu anfordern.
+ * V 1.8:  - Auslesen verbessert. Falls die angeforderten 7 uint8_ts nicht kommen, verwerfen und neu anfordern.
  * V 1.9:  - Macro zum Stellen der Uhr durch die Compile-Zeit von Kee-Labs geklaut und hier eingefuegt.
  * V 2.0:  - DS1307 nach MyRTC umbenannt, weil es jetzt nicht mehr nur um die DS1307 geht.
  *         - Getrennte Logik fuer das Rachtencksignal (SQW) eingefuehrt, danke an Erich M.
@@ -30,7 +30,7 @@
 
 class MyRTC : public TimeStamp {
 public:
-    MyRTC(int address, byte statusLedPin);
+    MyRTC(int address, uint8_t statusLedPin);
 
     void statusLed(boolean on);
 
@@ -40,18 +40,18 @@ public:
     void enableSQWOnDS1307();
     void enableSQWOnDS3231();
 
-    void setSeconds(byte seconds);
+    void setSeconds(uint8_t seconds);
 
-    byte getSeconds();
+    uint8_t getSeconds();
 
 private:
     int _address;
-    byte _statusLedPin;
+    uint8_t _statusLedPin;
 
-    byte _seconds;
+    uint8_t _seconds;
 
-    byte decToBcd(byte val);
-    byte bcdToDec(byte val);
+    uint8_t decToBcd(uint8_t val);
+    uint8_t bcdToDec(uint8_t val);
     uint8_t conv2d(const char* p);
 };
 

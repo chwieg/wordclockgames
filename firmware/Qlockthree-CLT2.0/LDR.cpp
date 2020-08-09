@@ -30,7 +30,7 @@
  * Ansonsten muss man diese Werte im #define-DEBUG-Mode
  * ausmessen und eintragen.
  */
-LDR::LDR(byte pin, boolean isInverted) {
+LDR::LDR(uint8_t pin, boolean isInverted) {
   _pin = pin;
   _isInverted = isInverted;
   _lastValue = 1;
@@ -47,7 +47,7 @@ LDR::LDR(byte pin, boolean isInverted) {
 /**
  * Welchen Wert hat der LDR? In Prozent...
  */
-byte LDR::value() {
+uint8_t LDR::value() {
   int rawVal, val;
   if (!_isInverted) {
     rawVal = analogRead(_pin);
@@ -68,7 +68,7 @@ byte LDR::value() {
 #else
     val = constrain(val, _min, _max);
 #endif
-    byte mapVal = map(val, _min, _max, 0, 100);
+    uint8_t mapVal = map(val, _min, _max, 0, 100);
     mapVal = constrain(mapVal, LDR_MIN_PERCENT, LDR_MAX_PERCENT);
     DEBUG_PRINT(F("rawVal: "));
     DEBUG_PRINT(rawVal);

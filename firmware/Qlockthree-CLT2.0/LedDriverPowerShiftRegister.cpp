@@ -29,7 +29,7 @@
  * @param latch Pin, an dem die Latch-Line haengt.
  * @param outputEnable Pin, an dem OutputEnable haengt.
  */
-LedDriverPowerShiftRegister::LedDriverPowerShiftRegister(byte data, byte clock, byte latch, byte outputEnable) {
+LedDriverPowerShiftRegister::LedDriverPowerShiftRegister(uint8_t data, uint8_t clock, uint8_t latch, uint8_t outputEnable) {
   _outputEnable = outputEnable;
   _shiftRegister = new ShiftRegister(data, clock, latch);
   _brightnessInPercent = 100;
@@ -53,12 +53,12 @@ void LedDriverPowerShiftRegister::printSignature() {
  * @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
-void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
+void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color) {
   if (onChange) {
     _shiftRegister->prepareShiftregisterWrite();
 
     // die letzten 6 Outputs sind frei - padding
-    for (byte p = 0; p < 6; p++) {
+    for (uint8_t p = 0; p < 6; p++) {
       _shiftRegister->shiftOutABit(false);
     }
 
@@ -88,14 +88,14 @@ void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(word matrix[16], boo
  *
  * @param brightnessInPercent Die Helligkeit.
  */
-void LedDriverPowerShiftRegister::setBrightness(byte brightnessInPercent) {
+void LedDriverPowerShiftRegister::setBrightness(uint8_t brightnessInPercent) {
   // wegen eines fehlerhaften Platinen-Layouts geht die Helligkeit hier im Moment nicht.
 }
 
 /**
  * Die aktuelle Helligkeit bekommen.
  */
-byte LedDriverPowerShiftRegister::getBrightness() {
+uint8_t LedDriverPowerShiftRegister::getBrightness() {
   return _brightnessInPercent;
 }
 
@@ -105,7 +105,7 @@ byte LedDriverPowerShiftRegister::getBrightness() {
  * @param linesToWrite Wieviel Zeilen aus dem Bildspeicher sollen
  *                     geschrieben werden?
  */
-void LedDriverPowerShiftRegister::setLinesToWrite(byte linesToWrite) {
+void LedDriverPowerShiftRegister::setLinesToWrite(uint8_t linesToWrite) {
 }
 
 /**

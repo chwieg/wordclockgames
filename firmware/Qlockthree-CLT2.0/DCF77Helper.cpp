@@ -31,7 +31,7 @@
  */
 DCF77Helper::DCF77Helper() {
     _cursor = 0;
-    for (byte i = 0; i < DCF77HELPER_MAX_SAMPLES; i++) {
+    for (uint8_t i = 0; i < DCF77HELPER_MAX_SAMPLES; i++) {
         _zeitstempelDcf77[i] = new TimeStamp(i, i, i, i, i, i);
         _zeitstempelRtc[i] = new TimeStamp(100, 0, 0, 0, 0, 0);
     }
@@ -61,7 +61,7 @@ void DCF77Helper::addSample(MyDCF77* dcf77, MyRTC* rtc) {
  */
 boolean DCF77Helper::samplesOk() {
     boolean ret = true;
-    for (byte i = 0; i < DCF77HELPER_MAX_SAMPLES - 1; i++) {
+    for (uint8_t i = 0; i < DCF77HELPER_MAX_SAMPLES - 1; i++) {
         #ifdef DEBUG
             long minuteDiffDcf77 = _zeitstempelDcf77[i]->getMinutesOfCentury() - _zeitstempelDcf77[i + 1]->getMinutesOfCentury();
             long minuteDiffRtc = _zeitstempelRtc[i]->getMinutesOfCentury() - _zeitstempelRtc[i + 1]->getMinutesOfCentury();

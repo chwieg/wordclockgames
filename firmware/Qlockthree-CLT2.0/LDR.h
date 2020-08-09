@@ -26,15 +26,15 @@
 
 class LDR {
   public:
-    LDR(byte pin, boolean isInverted);
+    LDR(uint8_t pin, boolean isInverted);
 
-    byte value();
+    uint8_t value();
 
   private:
-    byte _pin;
+    uint8_t _pin;
     boolean _isInverted;
     int _lastValue;
-    byte _outputValue;
+    uint8_t _outputValue;
     int _min;
     int _max;
 };

@@ -23,18 +23,18 @@
 
 class LedDriverPowerShiftRegister : public LedDriver {
   public:
-    LedDriverPowerShiftRegister(byte data, byte clock, byte latch, byte outputEnable);
+    LedDriverPowerShiftRegister(uint8_t data, uint8_t clock, uint8_t latch, uint8_t outputEnable);
 
     void init();
 
     void printSignature();
 
-    void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color = color_none);
+    void writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color = color_none);
 
-    void setBrightness(byte brightnessInPercent);
-    byte getBrightness();
+    void setBrightness(uint8_t brightnessInPercent);
+    uint8_t getBrightness();
 
-    void setLinesToWrite(byte linesToWrite);
+    void setLinesToWrite(uint8_t linesToWrite);
 
     void shutDown();
     void wakeUp();
@@ -42,11 +42,11 @@ class LedDriverPowerShiftRegister : public LedDriver {
     void clearData();
 
   private:
-    byte _brightnessInPercent;
+    uint8_t _brightnessInPercent;
 
-    byte _linesToWrite;
+    uint8_t _linesToWrite;
 
-    byte _outputEnable;
+    uint8_t _outputEnable;
 
     ShiftRegister *_shiftRegister;
 };

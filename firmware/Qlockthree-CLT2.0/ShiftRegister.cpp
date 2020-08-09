@@ -30,7 +30,7 @@
 /**
  * Initialisierung mit den Pins fuer Serial-Data, Serial-Clock und Store-Clock (Latch)
  */
-ShiftRegister::ShiftRegister(byte dataPin, byte clockPin, byte latchPin) {
+ShiftRegister::ShiftRegister(uint8_t dataPin, uint8_t clockPin, uint8_t latchPin) {
 #ifdef SHIFTREGISTER_TURBO
   DEBUG_PRINTLN(F("ShiftRegister is in TURBO-MODE."));
   DEBUG_FLUSH();
@@ -62,21 +62,21 @@ ShiftRegister::ShiftRegister(byte dataPin, byte clockPin, byte latchPin) {
 }
 
 /**
- * Ein WORD (16 Bit) ausgeben
+ * Ein uint16_t (16 Bit) ausgeben
  */
-void ShiftRegister::shiftOut(word data) {
+void ShiftRegister::shiftOut(uint16_t data) {
 #ifdef OPTIMIZED_FOR_DARKNESS
-  if (data == (word) 65535) {
+  if (data == (uint16_t) 65535) {
     fastDigitalWriteToData(HIGH);
-    for (byte i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < 16; i++) {
       fastDigitalWriteToClock(LOW);
       fastDigitalWriteToClock(HIGH);
     }
     return;
   }
-  if (data == (word) 0) {
+  if (data == (uint16_t) 0) {
     fastDigitalWriteToData(LOW);
-    for (byte i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < 16; i++) {
       fastDigitalWriteToClock(LOW);
       fastDigitalWriteToClock(HIGH);
     }
@@ -84,7 +84,7 @@ void ShiftRegister::shiftOut(word data) {
   }
 #endif
 #ifdef SHIFTREGISTER_TURBO
-  for (byte b = 0; b < 16; b++) {
+  for (uint8_t b = 0; b < 16; b++) {
     fastDigitalWriteToClock(LOW);
     if (data & (1 << b)) {
       fastDigitalWriteToData(HIGH);
@@ -94,7 +94,7 @@ void ShiftRegister::shiftOut(word data) {
     fastDigitalWriteToClock(HIGH);
   }
 #else
-  for (byte b = 0; b < 16; b++) {
+  for (uint8_t b = 0; b < 16; b++) {
     digitalWrite(_clockPin, LOW);
     if (data & (1 << b)) {
       digitalWrite(_dataPin, HIGH);

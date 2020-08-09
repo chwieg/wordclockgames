@@ -38,20 +38,23 @@
   #endif
 #endif
 
+#include "Games.h"
+
+
 class LedDriverLPD8806 : public LedDriver {
   public:
-    LedDriverLPD8806(byte dataPin, byte clockPin);
+    LedDriverLPD8806(uint8_t dataPin, uint8_t clockPin);
 
     void init();
 
     void printSignature();
 
-    void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color);
+    void writeScreenBufferToMatrix(uint16_t matrix[16], boolean onChange, eColors a_color);
+    void writeBoardToMatrix(uint8_t colorDef[NUM_COLORS][3], uint8_t board[N_ROWS][N_COLS], uint8_t corners); 
+    void setBrightness(uint8_t brightnessInPercent);
+    uint8_t getBrightness();
 
-    void setBrightness(byte brightnessInPercent);
-    byte getBrightness();
-
-    void setLinesToWrite(byte linesToWrite);
+    void setLinesToWrite(uint8_t linesToWrite);
 
     void shutDown();
     void wakeUp();
@@ -59,18 +62,18 @@ class LedDriverLPD8806 : public LedDriver {
     void clearData();
 
   private:
-    byte _brightnessInPercent;
+    uint8_t _brightnessInPercent;
 
     boolean _dirty;
 
-    void _setPixel(byte x, byte y, uint32_t c);
-    void _setPixel(byte num, uint32_t c);
+    void _setPixel(uint8_t x, uint8_t y, uint32_t c);
+    void _setPixel(uint8_t num, uint32_t c);
 
-    uint32_t _wheel(byte brightness, byte wheelPos);
+    uint32_t _wheel(uint8_t brightness, uint8_t wheelPos);
 
     void _clear();
 
-    byte _brightnessScaleColor(byte brightness, byte colorPart);
+    uint8_t _brightnessScaleColor(uint8_t brightness, uint8_t colorPart);
 
     unsigned int _lastLEDsOn;
 

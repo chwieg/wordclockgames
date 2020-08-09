@@ -19,11 +19,11 @@
  */
 #include "LedDriver.h"
 
-void LedDriver::setPixelInScreenBuffer(byte x, byte y, word matrix[16]) {
+void LedDriver::setPixelInScreenBuffer(uint8_t x, uint8_t y, uint16_t matrix[16]) {
   matrix[y] |= 0b1000000000000000 >> x;
 }
 
-boolean LedDriver::getPixelFromScreenBuffer(byte x, byte y, word matrix[16]) {
+boolean LedDriver::getPixelFromScreenBuffer(uint8_t x, uint8_t y, uint16_t matrix[16]) {
   return (matrix[y] & (0b1000000000000000 >> x)) == (0b1000000000000000 >> x);
 }
 

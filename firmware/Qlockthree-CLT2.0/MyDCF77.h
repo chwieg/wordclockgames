@@ -39,7 +39,7 @@
 class MyDCF77 : public TimeStamp {
 
 public:
-    MyDCF77(byte signalPin, byte statusLedPin);
+    MyDCF77(uint8_t signalPin, uint8_t statusLedPin);
 
     void statusLed(boolean on);
 
@@ -48,26 +48,26 @@ public:
     unsigned int getDcf77LastSuccessSyncMinutes();
     void setDcf77SuccessSync();
 
-    byte getBitAtPos(byte pos);
+    uint8_t getBitAtPos(uint8_t pos);
     void updateDcf77ErrorCorner(boolean signalIsInverted);
-    byte getDcf77ErrorCorner();
+    uint8_t getDcf77ErrorCorner();
 
     boolean signal(boolean signalIsInverted);
 
 private:
-    byte _signalPin;
-    byte _statusLedPin;
+    uint8_t _signalPin;
+    uint8_t _statusLedPin;
     unsigned int _nPolls = 0;
 
-    static byte DCF77Factors[];
+    static uint8_t DCF77Factors[];
 
-    byte _bitsPointer;
-    byte _bits[MYDCF77_TELEGRAMMLAENGE+1];
+    uint8_t _bitsPointer;
+    uint8_t _bits[MYDCF77_TELEGRAMMLAENGE+1];
     
     unsigned int _bins[MYDCF77_SIGNAL_BINS];
     int _binsPointer = 0;
     int _binsOffset = 0;
-    byte _driftTimer = 0;
+    uint8_t _driftTimer = 0;
 
     int _updateFromDCF77 = -1;
 
@@ -76,7 +76,7 @@ private:
 
     unsigned long _dcf77lastSyncTime = 0;
     boolean _toggleSignal = false;
-    byte _errorCorner = 0;
+    uint8_t _errorCorner = 0;
 
     void newCycle();
     void OutputSignal(unsigned int average, unsigned int imax, unsigned int isum);
