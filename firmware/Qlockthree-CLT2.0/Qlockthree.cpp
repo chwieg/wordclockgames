@@ -656,6 +656,11 @@ byte fallBackCounter = 0;
 // Indiziert, ob Event aktiv ist.
 bool evtActive = false;
 
+// Variablen für den Game Mode CON4 (4 gewinnt)
+uint8_t colorDef[NUM_COLORS][3];
+uint8_t board[N_ROWS][N_COLS];
+uint8_t corners;
+
 /**
    Aenderung der Anzeige als Funktion fuer den Interrupt, der ueber das SQW-Signal
    der Real-Time-Clock gesetzt wird. Da die Wire-Bibliothek benutzt wird, kann man
@@ -872,8 +877,6 @@ void setup() {
 #endif
 }
 
-#define NUM_BYTES_BT_CON4 50 // Anzahl an Bytes die im Game Mode übertragen werden
-byte tmp_cnt = 0; // nur fürs Schnelle Testen
 /**
    loop() wird endlos auf alle Ewigkeit vom Microcontroller durchlaufen
 */
@@ -1408,8 +1411,13 @@ void loop() {
 
     // Update mit onChange = true, weil sich hier (aufgrund needsUpdateFromRtc) immer was geaendert hat.
     // Entweder weil wir eine Sekunde weiter sind, oder weil eine Taste gedrueckt wurde.
-    ledDriver.writeScreenBufferToMatrix(matrix, true, settings.getColor());
+    if (mode == EXT_MODE_CON4) {
+      ledDriver.writeBoardToMatrix(colorDef, board, corners);
+    } else {
+      ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+    }
   }
+
 #ifdef USE_EXT_MODE_DCF_DEBUG
   if (mode == EXT_MODE_DCF_DEBUG) {
     byte currentErrorCorner = dcf77.getDcf77ErrorCorner();
@@ -1459,29 +1467,64 @@ void loop() {
 
 #ifdef REMOTE_BLUETOOTH
   unsigned int lastIrCodeBT = 0;
-  unsigned long serialInput = 10;
-  char btReadBuffer[NUM_BYTES_BT_CON4];
-  size_t numBtReadBytes = 0;
+  unsigned long serialInput = 0;
+  uint8_t btReadBuffer[NUM_BYTES_BT_CON4];
+  uint8_t bytePos = 0;
+  size_t numBtreadBytes = 0;
   while (Serial.available() > 0) {
     DEBUG_PRINTLN(F("BT Serial available:"));
-    if (mode==EXT_MODE_CON4 && tmp_cnt<10) {
-      tmp_cnt++;
-      numBtReadBytes = Serial.readBytes(btReadBuffer, NUM_BYTES_BT_CON4);
-      Serial.print("number of bytes received: ");
-      Serial.println(numBtReadBytes);
-      for (byte i=0; i<numBtReadBytes; i++) {
+    if (mode==EXT_MODE_CON4) {
+      numBtreadBytes = Serial.readBytes(btReadBuffer, NUM_BYTES_BT_CON4);
+
+      Serial.print("number of uint8_ts received: ");
+      Serial.println(numBtreadBytes);
+      for (uint8_t i=0; i<numBtreadBytes; i++) {
         Serial.print(btReadBuffer[i], HEX);
         Serial.print(" ");
       }
       Serial.println();
+      switch (numBtreadBytes) {
+        case 8: // remote command
+          Serial.println("remote command");
+          serialInput = 
+            (btReadBuffer[0] & 0x0F) * 10000000 +
+            (btReadBuffer[1] & 0x0F) * 1000000 +
+            (btReadBuffer[2] & 0x0F) * 100000 +
+            (btReadBuffer[3] & 0x0F) * 10000 +
+            (btReadBuffer[4] & 0x0F) * 1000 +
+            (btReadBuffer[5] & 0x0F) * 100 +
+            (btReadBuffer[6] & 0x0F) * 10 +
+            btReadBuffer[7] & 0x0F;
+          break;
+        case NUM_BYTES_BT_CON4: // game command
+          Serial.println("game command");
+          for (uint8_t i=0; i<NUM_COLORS; i++) {
+            for (uint8_t j=0; j<3; j++) {
+              colorDef[i][j] = btReadBuffer[bytePos++];
+            }
+          }  
+          for (uint8_t row=0; row<N_ROWS; row++) {
+            for (uint8_t col=0; col<N_COLS; col++) {
+              board[row][col] = btReadBuffer[bytePos++];
+            } 
+          }
+          corners = btReadBuffer[bytePos];
+          needsUpdateFromRtc = true;
+          break;
+        default:
+          Serial.println("unknown command");
+          break;
+      }
     } else {
       serialInput = Serial.parseInt();
+      Serial.read();
+    }
+    if (serialInput > 0) {
       DEBUG_PRINTLN2(serialInput, DEC);
       DEBUG_PRINTLN2(serialInput, HEX);
       lastIrCodeBT = irTranslatorBT.buttonForCode(serialInput); 
       DEBUG_PRINTLN(F("Decoded to button:"));
       DEBUG_PRINTLN2(lastIrCodeBT, DEC);
-      Serial.read();
     }
   }
   if (lastIrCodeBT != 0) {
@@ -1546,7 +1589,11 @@ void loop() {
      Die Matrix auf die LEDs multiplexen, hier 'Refresh-Zyklen'.
   */
   if ((mode != STD_MODE_BLANK) && (mode != STD_MODE_NIGHT)) {
-    ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+    if (mode == EXT_MODE_CON4) {
+      ledDriver.writeBoardToMatrix(colorDef, board, corners);
+    } else {
+      ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+    }
   }
 
   /*

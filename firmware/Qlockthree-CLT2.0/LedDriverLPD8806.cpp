@@ -290,6 +290,59 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   }
 }
 
+
+/**
+ * LED-Matrix auf den mittleren 42 Feldern und in den Ecken beschreiben.
+ * für 4 gewinnt Modus
+ * 
+ * numColors: Anzahl der verschiedenen Darzustellenden Farben
+ * colorDef:  Array von uint32_t Farbdefinition
+ * board:     array der 42 Spielfelder. Wert entspricht Index von colorDef+1
+ *            Bsp. für Werte:
+ *            0: hier für LED aus; 1: colorDef[0], usw.
+ * corners:   Array für die vier Ecken. Wert entspricht Index von colorDef+1 (d.h. wie board)
+ */
+void LedDriverLPD8806::writeBoardToMatrix(uint8_t colorDef[NUM_COLORS][3], uint8_t board[N_ROWS][N_COLS], uint8_t corners) {
+
+  uint8_t x=0;
+  uint8_t y=0;
+  uint32_t colorBoundary = _strip->Color(0x7F, 0x7F, 0x7F); // Farbe für Rand des Spielfelds
+  uint8_t ixColor = 0;  // Index für Farbe aus colorDef
+
+  _clear();
+    
+  // Rand darstellen
+  for (y = 2; y < 2+6; y++) {
+    _setPixel(1, y, colorBoundary);
+    _setPixel(9, y, colorBoundary);
+  }
+  for (x = 1; x <= 9; x++) {
+    _setPixel(x, 8, colorBoundary);
+  }
+
+  // Spielfeld darstellen
+  for ( uint8_t row = 0; row < N_ROWS; row++) {
+    for ( uint8_t col = 0; col < N_COLS; col++) {
+      if (board[row][col]) {
+        ixColor = board[row][col] - 1;
+        x = col+2;
+        y = row+2;  
+        _setPixel(x, y, _strip->Color(colorDef[ixColor][0], colorDef[ixColor][2], colorDef[ixColor][1]) );
+      }
+    }
+  }
+
+  // 4 Ecken ansteuern
+  if (corners) {
+    ixColor = corners - 1;
+    for ( uint8_t i = 0; i < 5; i++) {
+      _setPixel(110 + i, _strip->Color(colorDef[ixColor][0], colorDef[ixColor][2], colorDef[ixColor][1]) );
+    }
+  }
+
+  _strip->show();
+}
+
 /**
    Die Helligkeit des Displays anpassen.
 

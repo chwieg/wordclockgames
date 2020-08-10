@@ -38,6 +38,9 @@
   #endif
 #endif
 
+#include "Games.h"
+
+
 class LedDriverLPD8806 : public LedDriver {
   public:
     LedDriverLPD8806(byte dataPin, byte clockPin);
@@ -45,6 +48,8 @@ class LedDriverLPD8806 : public LedDriver {
     void init();
 
     void printSignature();
+
+    void writeBoardToMatrix(uint8_t colorDef[NUM_COLORS][3], uint8_t board[N_ROWS][N_COLS], uint8_t corners); 
 
     void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color);
 
