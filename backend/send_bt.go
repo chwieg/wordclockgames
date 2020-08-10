@@ -7,37 +7,72 @@ import (
 	"strconv"
 )
 
+const btGameBufferLen = 49 // number of Bytes to transmit for game state
+
+
 // converts input hex str to str of hex ascii codes representing the decimal value of the hex input
 func hex2decAscii(hexStr string) string {
 
-	//fmt.Printf("Input: %v\n", hexStr)
-
 	decInt, _ := strconv.ParseUint(hexStr, 0, 64)
-	//fmt.Printf("%T, %v\n", decInt, decInt)
-
 	decStr := strconv.Itoa(int(decInt))
-	//fmt.Printf("%T, %v\n", decStr, decStr)
-
 	decAsciiBytes := []byte(decStr)
-	//fmt.Printf("%T, %v\n", decAsciiBytes, decAsciiBytes)
-
 	decAsciiStr := hex.EncodeToString(decAsciiBytes)
-	//fmt.Printf("%T, %v\n", decAsciiStr, decAsciiStr)
 
 	return decAsciiStr
 }
 
+func getBtGameBuffer(g game) [btGameBufferLen]byte {
+
+	var (
+		buffer [49]byte
+		ixBeg int
+		ixEnd int
+	)
+
+	h, _ :=  hex.DecodeString(g.ColorPlayer1)
+	copy(buffer[:3],h)
+
+	h, _ =  hex.DecodeString(g.ColorPlayer2)
+	copy(buffer[3:6],h)
+
+	for i := 0; i < nRows; i++ {
+		ixBeg = 6+(i*nCols)
+		ixEnd = ixBeg+nCols
+		copy(buffer[ixBeg:ixEnd], g.Board[i][:])
+	}
+
+	if g.State == stRunning {
+		buffer[ixEnd] = g.ActivePlayer
+	} else {
+		buffer[ixEnd] = 0
+	}
+
+	return buffer
+}
+
+
 func sendBtButtonCode(buttonCode string) {
-	//gattCmd := "gatttool -i hci0 -b 00:13:AA:00:BC:8C --char-write-req -a 0x0025 -n "+
-		//hex2decAscii(buttonCode)
+
+	sendBtCommand(hex2decAscii(buttonCode))
+}
+
+func sendBtGame(g game) {
+
+	buffer := getBtGameBuffer(g)
+	sendBtCommand(hex.EncodeToString(buffer[:]))
+}
+
+func sendBtCommand(btCommand string) {
 	cmd := exec.Command("gatttool", "-i", "hci0", "-b", "00:13:AA:00:BC:8C", "--char-write-req", "-a", "0x0025", "-n",
-		hex2decAscii(buttonCode))
+		btCommand)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
+
+
 
 /*
 func main() {

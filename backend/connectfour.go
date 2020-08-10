@@ -20,20 +20,20 @@ const (
 
 type game struct {
 	State        state
-	ActivePlayer int
+	ActivePlayer byte
 	ColorPlayer1 string
 	ColorPlayer2 string
 	AllowedMoves [nCols]bool
-	Board        [nRows][nCols]int // bord[0][0] is upper left corner
+	Board        [nRows][nCols]byte // bord[0][0] is upper left corner
 }
 
 func newGame() game {
 	g := game{
 		State:        stRunning,
 		ActivePlayer: 1,
-		ColorPlayer1: "#00FF7F",
-		ColorPlayer2: "#00BFFF",
-
+		//ColorPlayer1: "00FF7F",  // hex string RGB // Farbe hat zu wenig Kontrast zum Blau
+		ColorPlayer1: "FF0000",  // hex string RGB
+		ColorPlayer2: "00BFFF",  // hex string RGB
 	}
 	g.updateAllowedMoves()
 	return g

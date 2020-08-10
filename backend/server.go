@@ -32,10 +32,13 @@ func conFourNewGameHandler(w http.ResponseWriter, r *http.Request) {
 	g = newGame()
 	fmt.Println("done.")
 	fmt.Println("Writing...")
+
 	json, _ := json.Marshal(g)
 	w.WriteHeader(http.StatusOK)
 	w.Write(json)
 	fmt.Println("done.")
+
+	sendBtGame(g)
 }
 
 func conFourHandler(w http.ResponseWriter, r *http.Request) {
@@ -71,10 +74,11 @@ func conFourHandler(w http.ResponseWriter, r *http.Request) {
 		g.updateAllowedMoves()
 		g.switchActivePlayer()
 
-
 		json, _ := json.Marshal(g)
 		w.WriteHeader(http.StatusOK)
 		w.Write(json)
+
+		sendBtGame(g)
 	}
 	/*	// debugging
 		json, err := json.Marshal(g)
