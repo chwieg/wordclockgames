@@ -1414,7 +1414,7 @@ void loop() {
     if (mode == EXT_MODE_CON4) {
       ledDriver.writeBoardToMatrix(colorDef, board, corners);
     } else {
-      ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
+      ledDriver.writeScreenBufferToMatrix(matrix, true, settings.getColor());
     }
   }
 
@@ -1545,7 +1545,7 @@ void loop() {
   }
 #endif
 
-  /*
+/*
      Display zeitgesteuert abschalten?
      Das Verbessert den DCF77-Empfang bzw. ermoeglicht ein dunkles Schlafzimmer.
   */
